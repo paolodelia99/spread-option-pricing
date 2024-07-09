@@ -24,10 +24,13 @@ public:
 
     std::pair<float, float> getGammas() const;
 
+    float getCrossGamma() const;
+
 private:
     static var _getMargrabePrice(var s1, var s2, var t, var vol_s1, var vol_s2, var corr);
     std::pair<var, var> _getDeltas() const;
     std::pair<var, var> _getGammas() const;
+    var _getCrossGamma() const;
 
     SpreadMarketData* spd_mkt_;
     const double strike_price_;
