@@ -12,26 +12,21 @@ public:
     SpreadOption(SpreadMarketData* spd_mkt, double strike_price, double vol_s1, double vol_s2, double discount_rate,
                 double corr);
 
-    ~SpreadOption();
+    ~SpreadOption() = default;
 
-    float getSpreadPrice();
+    virtual float getSpreadPrice() = 0;
 
     float getCurrentAsset1Price() const;
 
     float getCurrentAsset2Price() const;
 
-    std::pair<float, float> getDeltas() const;
+    virtual std::pair<float, float> getDeltas() const = 0;
 
-    std::pair<float, float> getGammas() const;
+    virtual std::pair<float, float> getGammas() const = 0;
 
-    float getCrossGamma() const;
+    virtual float getCrossGamma() const = 0;
 
-private:
-    static var _getMargrabePrice(var s1, var s2, var t, var vol_s1, var vol_s2, var corr);
-    std::pair<var, var> _getDeltas() const;
-    std::pair<var, var> _getGammas() const;
-    var _getCrossGamma() const;
-
+protected:
     SpreadMarketData* spd_mkt_;
     const double strike_price_;
     const double vol_s1_;
