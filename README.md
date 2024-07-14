@@ -18,7 +18,15 @@ The following `spread_pricing` library expose some pricing function for price sp
 
 ### Build the library
 
-To build the library locally, the workflow to follow is the following
+In order to build the library you need install various dependencies
+
+- [`autodiff`](https://github.com/autodiff/autodiff/) library: needed for the Greeks calculation, leveraging automatic differentiation, for the margrabe option `MargrabeOption` class. But `autodiff` depends itself on other libraries:
+  - `Eigen3`: lightweight C++ template library for linear algebra (sudo apt install libeigen3-dev)
+  - `Catch2` 
+  - `PyBind` (sudo apt -y install python3-pybind11)
+- `googletest`: used a testing framework, if it is not installed locally, it will be imported by Cmake using `FetchContent`
+
+Once you have installed all the dependencies then to build the library locally, the workflow to follow is the following
 
     git clone https://github.com/paolodelia99/spread-option-pricing
     cd spread-option-pricing
@@ -26,3 +34,6 @@ To build the library locally, the workflow to follow is the following
     cmake ..
     make
 
+### Use the library
+
+TODO: add instruction
