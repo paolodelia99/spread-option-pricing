@@ -34,9 +34,9 @@ public:
 
 private:
     static var _getMargrabePrice(var s1, var s2, var t, var vol_s1, var vol_s2, var corr);
-    std::pair<var, var> _getDeltas() const;
-    std::pair<var, var> _getGammas() const;
-    var _getCrossGamma() const;
+    std::pair<var, var> _getDeltas(var spot_1, var spot_2) const;
+    std::pair<var, var> _getGammas(var spot_1, var spot_2) const;
+    var _getCrossGamma(var spot_1, var spot_2) const;
 };
 
 #endif //MARGRABEOPTION_H
