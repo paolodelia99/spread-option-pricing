@@ -1,12 +1,15 @@
 cmake_minimum_required(VERSION 3.28)
-project(spread_pricing)
+project(spread_pricing LANGUAGES CXX CUDA)
 
+set(CMAKE_CUDA_ARCHITECTURES "native")
 set(CMAKE_CXX_STANDARD 23)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 include_directories(include)
-add_library(spread_pricing STATIC ${SOURCES})
+add_library(spread_pricing STATIC ${SOURCES}
+        src/MCEngine.cu
+)
 
 # Get Gtest
 include(FetchContent)
@@ -24,15 +27,12 @@ enable_testing()
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 
 # Create an executable for the tests
-add_executable(runTests ${TEST_SOURCES}
-        test/ExchangeOptionTest.cpp
-        include/MargrabeOption.h
-)
+add_executable(runTests ${TEST_SOURCES})
 
 target_include_directories(spread_pricing PUBLIC include)
 
 # Link the GoogleTest and library to the test executable
-target_link_libraries(runTests gtest gtest_main spread_pricing)
+target_link_libraries(runTests gtest gtest_main spread_pricing ${CUDA_LIBRARIES})
 
 # Add tests
 include(GoogleTest)
