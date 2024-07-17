@@ -21,3 +21,33 @@ float SpreadOption::getCurrentAsset2Price() const
 {
     return spd_mkt_->getCurrentAsset2Price();
 }
+
+double SpreadOption::getCorrelation() const
+{
+    return corr_;
+}
+
+double SpreadOption::getExpiration() const
+{
+    return spd_mkt_->getTimeToExpiration();
+}
+
+double SpreadOption::getDiscoutRate() const
+{
+    return discount_rate_;
+}
+
+double SpreadOption::getVolAsset1() const
+{
+    return vol_s1_;
+}
+
+double SpreadOption::getVolAsset2() const
+{
+    return vol_s2_;
+}
+
+double SpreadOption::getStrikePrice() const
+{
+    return strike_price_;
+}
