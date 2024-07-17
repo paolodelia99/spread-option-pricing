@@ -20,6 +20,18 @@ public:
 
     float getCurrentAsset2Price() const;
 
+    double getCorrelation() const;
+
+    double getExpiration() const;
+
+    double getDiscoutRate() const;
+
+    double getVolAsset1() const;
+
+    double getVolAsset2() const;
+
+    double getStrikePrice() const;
+
     virtual std::pair<float, float> getDeltas() const = 0;
 
     virtual std::pair<float, float> getGammas() const = 0;

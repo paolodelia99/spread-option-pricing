@@ -24,10 +24,7 @@ enable_testing()
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 
 # Create an executable for the tests
-add_executable(runTests ${TEST_SOURCES}
-        test/ExchangeOptionTest.cpp
-        include/MargrabeOption.h
-)
+add_executable(runTests ${TEST_SOURCES})
 
 target_include_directories(spread_pricing PUBLIC include)
 
