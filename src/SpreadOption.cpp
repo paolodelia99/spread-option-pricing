@@ -1,8 +1,8 @@
 #include "SpreadOption.h"
 #include "MathUtils.h"
 
-SpreadOption::SpreadOption(SpreadMarketData* spd_mkt, const double strike_price, const double vol_s1, const double vol_s2,
-                           const double discount_rate, const double corr)
+template<typename Real> SpreadOption<Real>::SpreadOption(SpreadMarketData<Real>* spd_mkt, const Real strike_price, const Real vol_s1, const Real vol_s2,
+                           const Real discount_rate, const Real corr)
                 : spd_mkt_(spd_mkt),
                 strike_price_(strike_price),
                 vol_s1_(vol_s1),
@@ -12,42 +12,53 @@ SpreadOption::SpreadOption(SpreadMarketData* spd_mkt, const double strike_price,
 {
 }
 
-float SpreadOption::getCurrentAsset1Price() const
+template <typename Real>
+Real SpreadOption<Real>::getCurrentAsset1Price()  const
 {
     return spd_mkt_->getCurrentAsset1Price();
 }
 
-float SpreadOption::getCurrentAsset2Price() const
+template <typename Real>
+Real SpreadOption<Real>::getCurrentAsset2Price() const
 {
     return spd_mkt_->getCurrentAsset2Price();
 }
 
-double SpreadOption::getCorrelation() const
+template <typename Real>
+Real SpreadOption<Real>::getCorrelation() const
 {
     return corr_;
 }
 
-double SpreadOption::getExpiration() const
+template <typename Real>
+Real SpreadOption<Real>::getExpiration() const
 {
     return spd_mkt_->getTimeToExpiration();
 }
 
-double SpreadOption::getDiscoutRate() const
+template <typename Real>
+Real SpreadOption<Real>::getDiscoutRate() const
 {
     return discount_rate_;
 }
 
-double SpreadOption::getVolAsset1() const
+template <typename Real>
+Real SpreadOption<Real>::getVolAsset1() const
 {
     return vol_s1_;
 }
 
-double SpreadOption::getVolAsset2() const
+template <typename Real>
+Real SpreadOption<Real>::getVolAsset2() const
 {
     return vol_s2_;
 }
 
-double SpreadOption::getStrikePrice() const
+template <typename Real>
+Real SpreadOption<Real>::getStrikePrice() const
 {
     return strike_price_;
 }
+
+template class SpreadOption<float>;
+template class SpreadOption<double>;
