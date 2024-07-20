@@ -8,24 +8,25 @@
 #include "MCEngine.h"
 
 
-class GBMSpreadOption : public SpreadOption
+template<typename Real>
+class GBMSpreadOption : public SpreadOption<Real>
 {
 public:
-    GBMSpreadOption(SpreadMarketData* spd_mkt, double strike_price, double vol_s1, double vol_s2, double discount_rate,
-                double corr);
+    GBMSpreadOption(SpreadMarketData<Real>* spd_mkt, Real strike_price, Real vol_s1, Real vol_s2, Real discount_rate,
+                Real corr);
 
     ~GBMSpreadOption() override;
 
-    float getSpreadPrice() override;
+    Real getSpreadPrice() override;
 
-    std::pair<float, float> getDeltas() const override;
+    std::pair<Real, Real> getDeltas() const override;
 
-    std::pair<float, float> getGammas() const override;
+    std::pair<Real, Real> getGammas() const override;
 
-    float getCrossGamma() const override;
+    Real getCrossGamma() const override;
 
 private:
-    MCEngine* mc_engine_;
+    MCEngine<Real>* mc_engine_;
 };
 
 

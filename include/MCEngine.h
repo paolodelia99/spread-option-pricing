@@ -11,22 +11,25 @@
 constexpr double MEAN = 0.0;
 constexpr double STD = 1.0;
 
+template<typename Real>
 class MCEngine {
+    static_assert(std::is_floating_point<Real>::value, "Real must be a floating point type");
+
 public:
     MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigned int seed);
     ~MCEngine() = default;
-    double operator()(SpreadOption &option);
+    Real operator()(SpreadOption<Real> &option);
 
 private:
-    std::pair<std::vector<double>, std::vector<double>> _simulatePaths(SpreadOption& option);
-    double _computeValue(SpreadOption& option, std::vector<double> final_s1, std::vector<double> final_s2);
-    std::vector<double> _generateNormalRandomVec();
+    std::pair<std::vector<Real>, std::vector<Real>> _simulatePaths(SpreadOption<Real>& option);
+    Real _computeValue(SpreadOption<Real>& option, std::vector<Real> final_s1, std::vector<Real> final_s2);
+    std::vector<Real> _generateNormalRandomVec();
 
     unsigned int n_timesteps_;
     unsigned int num_sim_;
     unsigned int seed_;
     std::mt19937 generator_;
-    std::normal_distribution<double> normal_distribution_;
+    std::normal_distribution<Real> normal_distribution_;
 };
 
 

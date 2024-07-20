@@ -6,45 +6,48 @@
 
 using namespace autodiff;
 
+template<typename Real>
 class SpreadOption
 {
+    static_assert(std::is_floating_point<Real>::value, "Real must be a floating point type");
+
 public:
-    SpreadOption(SpreadMarketData* spd_mkt, double strike_price, double vol_s1, double vol_s2, double discount_rate,
-                double corr);
+    SpreadOption(SpreadMarketData<Real>* spd_mkt, Real strike_price, Real vol_s1, Real vol_s2, Real discount_rate,
+                Real corr);
 
     virtual ~SpreadOption() = default;
 
-    float getCurrentAsset1Price() const;
+    Real getCurrentAsset1Price() const;
 
-    float getCurrentAsset2Price() const;
+    Real getCurrentAsset2Price() const;
 
-    double getCorrelation() const;
+    Real getCorrelation() const;
 
-    double getExpiration() const;
+    Real getExpiration() const;
 
-    double getDiscoutRate() const;
+    Real getDiscoutRate() const;
 
-    double getVolAsset1() const;
+    Real getVolAsset1() const;
 
-    double getVolAsset2() const;
+    Real getVolAsset2() const;
 
-    double getStrikePrice() const;
+    Real getStrikePrice() const;
 
-    virtual float getSpreadPrice() = 0;
+    virtual Real getSpreadPrice() = 0;
 
-    virtual std::pair<float, float> getDeltas() const = 0;
+    virtual std::pair<Real, Real> getDeltas() const = 0;
 
-    virtual std::pair<float, float> getGammas() const = 0;
+    virtual std::pair<Real, Real> getGammas() const = 0;
 
-    virtual float getCrossGamma() const = 0;
+    virtual Real getCrossGamma() const = 0;
 
 protected:
-    SpreadMarketData* spd_mkt_;
-    const double strike_price_;
-    const double vol_s1_;
-    const double vol_s2_;
-    const double discount_rate_;
-    const double corr_;
+    SpreadMarketData<Real>* spd_mkt_;
+    const Real strike_price_;
+    const Real vol_s1_;
+    const Real vol_s2_;
+    const Real discount_rate_;
+    const Real corr_;
 };
 
 #endif //SPREAD_PRICING_LIBRARY_H

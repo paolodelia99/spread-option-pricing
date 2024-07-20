@@ -12,25 +12,26 @@
 
 using namespace autodiff;
 
-class MargrabeOption: public SpreadOption
+template<typename Real>
+class MargrabeOption: public SpreadOption<Real>
 {
 public:
-    MargrabeOption(SpreadMarketData* spd_mkt, double vol_s1, double vol_s2, double discount_rate,
-                double corr);
+    MargrabeOption(SpreadMarketData<Real>* spd_mkt, Real vol_s1, Real vol_s2, Real discount_rate,
+                Real corr);
 
     ~MargrabeOption();
 
-    float getSpreadPrice() override;
+    Real getSpreadPrice() override;
 
-    float getCurrentAsset1Price() const;
+    Real getCurrentAsset1Price() const;
 
-    float getCurrentAsset2Price() const;
+    Real getCurrentAsset2Price() const;
 
-    std::pair<float, float> getDeltas() const override;
+    std::pair<Real, Real> getDeltas() const override;
 
-    std::pair<float, float> getGammas() const override;
+    std::pair<Real, Real> getGammas() const override;
 
-    float getCrossGamma() const override;
+    Real getCrossGamma() const override;
 
 private:
     static var _getMargrabePrice(var s1, var s2, var t, var vol_s1, var vol_s2, var corr);
