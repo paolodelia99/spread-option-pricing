@@ -12,9 +12,7 @@ public:
     SpreadOption(SpreadMarketData* spd_mkt, double strike_price, double vol_s1, double vol_s2, double discount_rate,
                 double corr);
 
-    ~SpreadOption() = default;
-
-    virtual float getSpreadPrice() = 0;
+    virtual ~SpreadOption() = default;
 
     float getCurrentAsset1Price() const;
 
@@ -31,6 +29,8 @@ public:
     double getVolAsset2() const;
 
     double getStrikePrice() const;
+
+    virtual float getSpreadPrice() = 0;
 
     virtual std::pair<float, float> getDeltas() const = 0;
 
