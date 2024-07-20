@@ -14,7 +14,8 @@ constexpr double STD = 1.0;
 class MCEngine {
 public:
     MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigned int seed);
-    void operator()(SpreadOption &option);
+    ~MCEngine() = default;
+    double operator()(SpreadOption &option);
 
 private:
     std::pair<std::vector<double>, std::vector<double>> _simulatePaths(SpreadOption& option);

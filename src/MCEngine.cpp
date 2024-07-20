@@ -17,31 +17,32 @@ std::vector<double> _createCorrelatedVec(std::vector<double> v1, std::vector<dou
 }
 
 MCEngine::MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigned int seed)
-    :num_sim_(num_sim_), n_timesteps_(n_timesteps), seed_(seed_)
+    :num_sim_(num_sim), n_timesteps_(n_timesteps), seed_(seed)
 {
     generator_ = std::mt19937(seed_);
     normal_distribution_ = std::normal_distribution<double>(MEAN, STD);
 }
 
-void MCEngine::operator()(SpreadOption& option)
+double MCEngine::operator()(SpreadOption& option)
 {
-
+    auto final_values = _simulatePaths(option);
+    return _computeValue(option, final_values.first, final_values.second);
 }
 
 std::pair<std::vector<double>, std::vector<double>> MCEngine::_simulatePaths(SpreadOption& option)
 {
     std::vector<double> final_s1(num_sim_), final_s2(num_sim_);
 
-    double dt = option.getExpiration() / n_timesteps_;
-    double sqrt_dt = sqrt(dt);
-    double s1_t = option.getCurrentAsset1Price();
-    double s2_t = option.getCurrentAsset2Price();
-    double r = option.getDiscoutRate();
-    double vol_s1 = option.getVolAsset1();
-    double vol_s2 = option.getVolAsset2();
+    const double dt = option.getExpiration() / n_timesteps_;
+    const double sqrt_dt = sqrt(dt);
+    const double r = option.getDiscoutRate();
+    const double vol_s1 = option.getVolAsset1();
+    const double vol_s2 = option.getVolAsset2();
 
     for (int i = 0; i < num_sim_; ++i)
     {
+        double s1_t = option.getCurrentAsset1Price();
+        double s2_t = option.getCurrentAsset2Price();
         std::vector<double> u1 = _generateNormalRandomVec();
         std::vector<double> u2 = _generateNormalRandomVec();
 
@@ -50,12 +51,12 @@ std::pair<std::vector<double>, std::vector<double>> MCEngine::_simulatePaths(Spr
 
         for (int j = 0; j < n_timesteps_; ++j)
         {
-            s1_t = s1_t * exp(r - 0.5 * vol_s1 * vol_s1) * dt + vol_s1 * w1[j] * sqrt_dt;
-            s2_t = s2_t * exp(r - 0.5 * vol_s2 * vol_s2) * dt + vol_s2 * w2[j] * sqrt_dt;
+            s1_t = s1_t * exp((r - 0.5 * vol_s1 * vol_s1) * dt + vol_s1 * w1[j] * sqrt_dt);
+            s2_t = s2_t * exp((r - 0.5 * vol_s2 * vol_s2) * dt + vol_s2 * w2[j] * sqrt_dt);
         }
 
-        final_s1.push_back(s1_t);
-        final_s2.push_back(s2_t);
+        final_s1[i] = s1_t;
+        final_s2[i] = s2_t;
     }
 
     return std::pair(final_s1, final_s2);
@@ -80,8 +81,7 @@ double MCEngine::_computeValue(SpreadOption& option, std::vector<double> final_s
 std::vector<double> MCEngine::_generateNormalRandomVec()
 {
     std::vector<double> rndVec(num_sim_);
-    for (int i = 0; i < num_sim_; ++i)
-        rndVec.push_back(normal_distribution_(generator_));
+    std::generate(rndVec.begin(), rndVec.end(), [&]() {return normal_distribution_(generator_); });
 
     return rndVec;
 }
