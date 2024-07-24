@@ -16,6 +16,7 @@ MargrabeOption<Real>::MargrabeOption(SpreadMarketData<Real>* spd_mkt, Real vol_s
 template <typename Real>
 MargrabeOption<Real>::~MargrabeOption()
 {
+    delete this->spd_mkt_;
 }
 
 template <typename Real>
