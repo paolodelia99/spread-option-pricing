@@ -6,10 +6,11 @@
 
 constexpr float TOLERANCE = 0.00001;
 
-class SpdExchangeOptionF : public testing::Test
+template<typename Real>
+class SpdExchangeOption : public testing::Test
 {
 protected:
-    SpdExchangeOptionF()
+    SpdExchangeOption()
         :strike_(0.0), corr_(0.0), spd_(nullptr)
     {
         spread_option_ = nullptr;
@@ -20,23 +21,23 @@ protected:
         SetUp(0.0, 0.0);
     }
 
-    void SetUp(const float strike, const float corr)
+    void SetUp(const Real strike, const Real corr)
     {
-        auto* s1 = new float(100);
-        auto* s2 = new float(100);
-        auto* t = new float(1.0);
+        auto* s1 = new Real(100);
+        auto* s2 = new Real(100);
+        auto* t = new Real(1.0);
         auto spd = new SpreadMarketData(s1, s2, t);
         SetUp(spd, strike, corr);
     }
 
-    void SetUp(SpreadMarketData<float>* spd, const float strike, const float corr)
+    void SetUp(SpreadMarketData<Real>* spd, const Real strike, const Real corr)
     {
         strike_ = strike;
         corr_ = corr;
         spd_ = spd;
-        const float vol_1 = 0.2;
-        const float vol_2 = vol_1;
-        const float r = 0.0;
+        const Real vol_1 = 0.2;
+        const Real vol_2 = vol_1;
+        const Real r = 0.0;
 
         spread_option_ = new GBMSpreadOption(spd_, strike_, vol_1, vol_2, r, corr);
     }
@@ -48,59 +49,14 @@ protected:
         delete spd_;
     }
 
-    GBMSpreadOption<float>* spread_option_;
-    float strike_;
-    float corr_;
-    SpreadMarketData<float>* spd_;
+    GBMSpreadOption<Real>* spread_option_;
+    Real strike_;
+    Real corr_;
+    SpreadMarketData<Real>* spd_;
 };
 
-class SpdExchangeOptionD : public testing::Test
-{
-protected:
-    SpdExchangeOptionD()
-        :strike_(0.0), corr_(0.0), spd_(nullptr)
-    {
-        spread_option_ = nullptr;
-    }
-
-    void SetUp() override
-    {
-        SetUp(0.0, 0.0);
-    }
-
-    void SetUp(const double strike, const double corr)
-    {
-        auto* s1 = new double(100);
-        auto* s2 = new double(100);
-        auto* t = new double(1.0);
-        auto spd = new SpreadMarketData(s1, s2, t);
-        SetUp(spd, strike, corr);
-    }
-
-    void SetUp(SpreadMarketData<double>* spd, const double strike, const double corr)
-    {
-        strike_ = strike;
-        corr_ = corr;
-        spd_ = spd;
-        const double vol_1 = 0.2;
-        const double vol_2 = vol_1;
-        const double r = 0.0;
-
-        spread_option_ = new GBMSpreadOption(spd_, strike_, vol_1, vol_2, r, corr);
-    }
-
-
-    void TearDown() override
-    {
-        delete spread_option_;
-        delete spd_;
-    }
-
-    GBMSpreadOption<double>* spread_option_;
-    double strike_;
-    double corr_;
-    SpreadMarketData<double>* spd_;
-};
+typedef SpdExchangeOption<float> SpdExchangeOptionF;
+typedef SpdExchangeOption<double> SpdExchangeOptionD;
 
 TEST_F(SpdExchangeOptionF, BasicExchangePriceAssertion)
 {
