@@ -3,6 +3,8 @@ project(spread_pricing)
 
 set(CMAKE_CXX_STANDARD 23)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 include_directories(include)
@@ -25,6 +27,9 @@ file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 
 # Create an executable for the tests
 add_executable(runTests ${TEST_SOURCES})
+
+# Compiler options
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -floop-parallelize-all -ftree-parallelize-loops=4" CACHE STRING "Set C++ Compiler Flags" FORCE)
 
 target_include_directories(spread_pricing PUBLIC include)
 

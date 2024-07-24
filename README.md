@@ -31,7 +31,7 @@ Once you have installed all the dependencies then to build the library locally, 
     git clone https://github.com/paolodelia99/spread-option-pricing
     cd spread-option-pricing
     mkdir build && cd build
-    cmake ..
+    cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE
     make
 
 ### Use the library

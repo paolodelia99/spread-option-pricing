@@ -2,4 +2,5 @@
 
 # build folders
 build
+build_
 cmake-build-debug
