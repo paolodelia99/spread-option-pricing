@@ -19,7 +19,11 @@ public:
     MargrabeOption(SpreadMarketData<Real>* spd_mkt, Real vol_s1, Real vol_s2, Real discount_rate,
                 Real corr);
 
-    ~MargrabeOption();
+    ~MargrabeOption() override;
+
+    MargrabeOption(const MargrabeOption& other);
+
+    MargrabeOption& operator=(const MargrabeOption& other);
 
     Real getSpreadPrice() override;
 

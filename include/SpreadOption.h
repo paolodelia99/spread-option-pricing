@@ -43,11 +43,11 @@ public:
 
 protected:
     SpreadMarketData<Real>* spd_mkt_;
-    const Real strike_price_;
-    const Real vol_s1_;
-    const Real vol_s2_;
-    const Real discount_rate_;
-    const Real corr_;
+    Real strike_price_;
+    Real vol_s1_;
+    Real vol_s2_;
+    Real discount_rate_;
+    Real corr_;
 };
 
 #endif //SPREAD_PRICING_LIBRARY_H
