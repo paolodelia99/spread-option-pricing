@@ -48,4 +48,3 @@ Real GBMSpreadOption<Real>::getCrossGamma() const
 
 template class GBMSpreadOption<float>;
 template class GBMSpreadOption<double>;
-

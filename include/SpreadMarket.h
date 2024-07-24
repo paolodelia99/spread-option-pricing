@@ -15,6 +15,13 @@ struct SpreadMarketData
     {
     }
 
+    ~SpreadMarketData()
+    {
+        s1_ = nullptr;
+        s2_ = nullptr;
+        time_to_exp_ = nullptr;
+    }
+
     Real getCurrentAsset1Price() const
     {
         return *s1_;
