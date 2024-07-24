@@ -22,19 +22,48 @@ struct SpreadMarketData
         time_to_exp_ = nullptr;
     }
 
+    SpreadMarketData(const SpreadMarketData& other)
+        :s1_(new Real(other.getCurrentAsset1Price())), s2_(new Real(other.getCurrentAsset2Price())),
+        time_to_exp_(new Real(other.getTimeToExpiration()))
+    {
+    }
+
+    SpreadMarketData& operator=(const SpreadMarketData& other)
+    {
+        if (this != &other)
+        {
+            delete s1_;
+            delete s2_;
+            delete time_to_exp_;
+            s1_ = other.s1_ ? new Real(*(other.s1_)): nullptr;
+            s2_ = other.s2_ ? new Real(*(other.s2_)): nullptr;
+            time_to_exp_ = other.time_to_exp_ ? new Real(*(other.time_to_exp_)): nullptr;
+        }
+        return *this;
+    }
+
     Real getCurrentAsset1Price() const
     {
-        return *s1_;
+        if (s1_)
+            return *s1_;
+
+        return 0.0;
     }
 
     Real getCurrentAsset2Price() const
     {
-        return *s2_;
+        if (s2_)
+            return *s2_;
+
+        return 0.0;
     }
 
     Real getTimeToExpiration() const
     {
-        return *time_to_exp_;
+        if (time_to_exp_)
+            return *time_to_exp_;
+
+        return 0.0;
     }
 
 private:
