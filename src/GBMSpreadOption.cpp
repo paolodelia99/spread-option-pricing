@@ -22,6 +22,41 @@ GBMSpreadOption<Real>::~GBMSpreadOption()
     delete mc_engine_;
 }
 
+template <typename Real>
+GBMSpreadOption<Real>::GBMSpreadOption(const GBMSpreadOption& other)
+    :GBMSpreadOption(
+        new SpreadMarketData<Real>(
+            other.spd_mkt_->s1_ ? new Real(other.spd_mkt_->s1_) : nullptr,
+            other.spd_mkt_->s2_ ? new Real(other.spd_mkt_->s2_) : nullptr,
+            other.spd_mkt_->time_to_exp_ ? new Real(other.spd_mkt_->s2_) : nullptr),
+            other.getVolAsset1(),
+            other.getVolAsset2(),
+            other.getDiscoutRate(),
+            other.getCorrelation()
+    )
+{
+}
+
+template <typename Real>
+GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(const GBMSpreadOption& other)
+{
+    if (this != &other)
+    {
+        //TODO: raise an error if the strike prrice does not match
+        auto s1 = other.spd_mkt_->s1_ ? new Real(other.spd_mkt_->s1_) : nullptr;
+        auto s2 = other.spd_mkt_->s2_ ? new Real(other.spd_mkt_->s2_) : nullptr;
+        auto t = other.spd_mkt_->time_to_exp_ ? new Real(other.spd_mkt_->time_to_exp_) : nullptr;
+        delete this->spd_mkt_;
+        this->spd_mkt_ = new SpreadMarketData<Real>(s1, s2, t);
+        this->strike_price_ = other.getStrikePrice();
+        this->vol_s1_ = other.getVolAsset1();
+        this->vol_s2_ = other.getVolAsset2();
+        this->discount_rate_ = other.getDiscoutRate();
+        this->corr_ = other.getCorrelation();
+    }
+    return *this;
+}
+
 template<typename Real>
 Real GBMSpreadOption<Real>::getSpreadPrice()
 {

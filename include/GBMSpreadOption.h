@@ -17,6 +17,10 @@ public:
 
     ~GBMSpreadOption() override;
 
+    GBMSpreadOption(const GBMSpreadOption& other);
+
+    GBMSpreadOption& operator=(const GBMSpreadOption& other);
+
     Real getSpreadPrice() override;
 
     std::pair<Real, Real> getDeltas() const override;
