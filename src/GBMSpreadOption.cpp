@@ -26,9 +26,10 @@ template <typename Real>
 GBMSpreadOption<Real>::GBMSpreadOption(const GBMSpreadOption& other)
     :GBMSpreadOption(
         new SpreadMarketData<Real>(
-            other.spd_mkt_->s1_ ? new Real(other.spd_mkt_->s1_) : nullptr,
-            other.spd_mkt_->s2_ ? new Real(other.spd_mkt_->s2_) : nullptr,
-            other.spd_mkt_->time_to_exp_ ? new Real(other.spd_mkt_->s2_) : nullptr),
+            new Real(other.getCurrentAsset1Price()),
+            new Real(other.getCurrentAsset2Price()),
+            new Real(other.getExpiration())),
+            other.getStrikePrice(),
             other.getVolAsset1(),
             other.getVolAsset2(),
             other.getDiscoutRate(),
@@ -43,9 +44,9 @@ GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(const GBMSpreadOption& o
     if (this != &other)
     {
         //TODO: raise an error if the strike prrice does not match
-        auto s1 = other.spd_mkt_->s1_ ? new Real(other.spd_mkt_->s1_) : nullptr;
-        auto s2 = other.spd_mkt_->s2_ ? new Real(other.spd_mkt_->s2_) : nullptr;
-        auto t = other.spd_mkt_->time_to_exp_ ? new Real(other.spd_mkt_->time_to_exp_) : nullptr;
+        auto s1 = new Real(other.getCurrentAsset1Price());
+        auto s2 = new Real(other.getCurrentAsset2Price());
+        auto t = new Real(other.getExpiration());
         delete this->spd_mkt_;
         this->spd_mkt_ = new SpreadMarketData<Real>(s1, s2, t);
         this->strike_price_ = other.getStrikePrice();
