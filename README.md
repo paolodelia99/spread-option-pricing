@@ -36,4 +36,54 @@ Once you have installed all the dependencies then to build the library locally, 
 
 ### Use the library
 
-TODO: add instruction
+An example usage of the `MargrabeOption` class is the following:
+
+```cpp
+#include <iostream>
+#include "SpreadMarket.h"
+#include "MargrabeOption.h"
+
+int main() {
+    auto s1 = new float(100);
+    auto s2 = new float(100);
+    auto t = new float(100);
+    auto spd_data = new SpreadMarketData(s1, s2, t);
+
+    const float vol1 = 0.2;
+    const float vol2 = 0.3;
+    const float corr = 0.0;
+    const float r = 0.0;
+
+    MargrabeOption mrg_option(spd_data, vol1, vol2, r, corr);
+
+    const float price = mrg_option.getSpreadPrice();
+    std::cout << "Spread Option Price: " << price << std::endl;
+    
+    // Greeks
+    // Deltas
+    const std::pair<float, float> d_s1_d_s2 = mrg_option.getDeltas();
+    std::cout << "Delta 1(dP/dS_1): " << d_s1_d_s2.first << std::endl;
+    std::cout << "Delta 2(dP/dS_2): " << d_s1_d_s2.second << std::endl;
+  
+    //Gammas
+    const std::pair<float, float> dd_s1_dd_s2 = mrg_option.getGammas();
+    std::cout << "Gamma 1(d^2P/dS_1^2): " << dd_s1_dd_s2.first << std::endl;
+    std::cout << "Gamma 2(d^2P/dS_2^2): " << dd_s1_dd_s2.second << std::endl;
+
+    // Cross Gamma
+    const float cross_gamma = mrg_option.getCrossGamma();
+    std::cout << "Cross Gamma (d^2P/dS_1 dS_2): " << cross_gamma << std::endl;
+
+    // Clean up
+    delete s1;
+    delete s2;
+    delete t;
+    delete spd_data;
+
+    return 0;
+}
+```
+
+## Authors
+
+D'Elia Paolo
