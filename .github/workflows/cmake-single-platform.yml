@@ -31,7 +31,7 @@ jobs:
       with:
         image: paolodelia99/spread-library-builder:0
         options: -v ${{ github.workspace }}:/app/spread-pricing
+        shell: bash
         run: |
-            cd app/spread-pricing
-            source scripts/build.sh -bt ${{env.BUILD_TYPE}} 
-            source scripts/run-tests.sh -bt ${{env.BUILD_TYPE}}
+            cd app/spread-pricing && source scripts/build.sh -bt ${{env.BUILD_TYPE}} 
+            cd app/spread-pricing && source scripts/run-tests.sh -bt ${{env.BUILD_TYPE}}
