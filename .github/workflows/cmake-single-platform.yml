@@ -28,7 +28,7 @@ jobs:
 
     - name: Build
       working-directory: app/spread-pricing
-      run: source scripts/build.sh -bt ${{env.BUILD_TYPE}}
+      run: pwd && ls && source scripts/build.sh -bt ${{env.BUILD_TYPE}}
 
     - name: Test
       working-directory: app/spread-pricing
