@@ -5,4 +5,4 @@ build
 build_
 cmake-build-debug
 
-!.github
+!.github/workflows/*.yml
