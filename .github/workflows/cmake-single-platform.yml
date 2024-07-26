@@ -25,8 +25,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: debug
-      -run: pwd && ls
+      run: pwd && ls
 
     - name: Build
       working-directory: app/spread-pricing
