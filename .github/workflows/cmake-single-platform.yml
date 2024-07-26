@@ -20,8 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: paolodelia99/spread-library-builder:0
-      volumes:
-        - ${{ github.workspace }}:/app/spread-pricing
+      #volumes:
+        #- ${{ github.workspace }}:/app/spread-pricing
 
     steps:
     - uses: actions/checkout@v4
