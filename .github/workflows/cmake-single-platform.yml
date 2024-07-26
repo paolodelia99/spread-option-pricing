@@ -18,17 +18,19 @@ jobs:
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
-    container:
-      image: paolodelia99/spread-library-builder:0
+    # container:
+      # image: paolodelia99/spread-library-builder:0
       #volumes:
         #- ${{ github.workspace }}:/app/spread-pricing
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Build
-      run: source scripts/build.sh -bt ${{env.BUILD_TYPE}}
-
-    - name: Test
-      run: source scripts/run-tests.sh -bt ${{env.BUILD_TYPE}}
-
+    - name: Run the build process with Docker
+      uses: addnab/docker-run-action@v3
+      with:
+        image: paolodelia99/spread-library-builder:0
+        options: -v ${{ github.workspace }}:/app/spread-pricing
+        run: |
+            source scripts/build.sh -bt ${{env.BUILD_TYPE}} 
+            source scripts/run-tests.sh -bt ${{env.BUILD_TYPE}}
