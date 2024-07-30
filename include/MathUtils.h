@@ -8,7 +8,7 @@
 
 using namespace autodiff;
 
-constexpr double SQRT_2 = sqrt(2.0);
+const double SQRT_2 = sqrt(2.0);
 
 
 
