@@ -5,7 +5,7 @@
 #include "MCEngine.h"
 
 template<typename Real>
-std::vector<Real> _createCorrelatedVec(std::vector<Real> v1, std::vector<Real> v2, Real rho)
+std::vector<Real> createCorrelatedVec(std::vector<Real>& v1, std::vector<Real>& v2, Real rho)
 {
     std::vector<Real> res(v1.size());
 
@@ -51,7 +51,7 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(S
         std::vector<Real> u2 = _generateNormalRandomVec();
 
         std::vector<Real> w1 = std::vector(u1);
-        std::vector<Real> w2 = _createCorrelatedVec(u1, u2, option.getCorrelation());
+        std::vector<Real> w2 = createCorrelatedVec(u1, u2, option.getCorrelation());
 
         for (int j = 0; j < n_timesteps_; ++j)
         {
@@ -67,7 +67,7 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(S
 }
 
 template <typename Real>
-Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real> final_s1, std::vector<Real> final_s2)
+Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real>& final_s1, std::vector<Real>& final_s2)
 {
     Real payoffSum = 0.0;
     const Real k = option.getStrikePrice();
