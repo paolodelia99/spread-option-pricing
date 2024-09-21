@@ -53,8 +53,6 @@ fi
 # Validate build type
 if [[ "$BUILD_TYPE" != "Release" && "$BUILD_TYPE" != "Debug" ]]; then
     echo "Invalid build type. Choose 'RELEASE' or 'DEBUG'."
-    exit 1
-fi
 
 # Check type compiler
 if [[ "$COMPILER" != "gcc" && "$COMPILER" != "clang" ]]; then
