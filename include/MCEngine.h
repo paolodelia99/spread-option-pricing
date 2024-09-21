@@ -22,7 +22,7 @@ public:
 
 private:
     std::pair<std::vector<Real>, std::vector<Real>> _simulatePaths(SpreadOption<Real>& option);
-    Real _computeValue(SpreadOption<Real>& option, std::vector<Real> final_s1, std::vector<Real> final_s2);
+    Real _computeValue(SpreadOption<Real>& option, std::vector<Real>& final_s1, std::vector<Real>& final_s2);
     std::vector<Real> _generateNormalRandomVec();
 
     unsigned int n_timesteps_;
