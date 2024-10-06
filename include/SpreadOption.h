@@ -1,12 +1,13 @@
 #ifndef SPREAD_PRICING_LIBRARY_H
 #define SPREAD_PRICING_LIBRARY_H
+#include <concepts>
 #include "SpreadMarket.h"
 #include "utility"
 #include <autodiff/reverse/var.hpp>
 
 using namespace autodiff;
 
-template<typename Real>
+template<std::floating_point Real>
 class SpreadOption
 {
     static_assert(std::is_floating_point<Real>::value, "Real must be a floating point type");

@@ -5,6 +5,7 @@
 #ifndef MARGRABEOPTION_H
 #define MARGRABEOPTION_H
 
+#include <concepts>
 #include "SpreadOption.h"
 #include "SpreadMarket.h"
 #include "utility"
@@ -12,7 +13,7 @@
 
 using namespace autodiff;
 
-template<typename Real>
+template<std::floating_point Real>
 class MargrabeOption: public SpreadOption<Real>
 {
 public:

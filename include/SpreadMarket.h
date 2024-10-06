@@ -4,8 +4,10 @@
 
 #ifndef SPREADMARKET_H
 #define SPREADMARKET_H
+#include <concepts>
 
-template<typename Real>
+
+template<std::floating_point Real>
 struct SpreadMarketData
 {
     SpreadMarketData(Real* s1, Real* s2, Real* time_to_exp)
