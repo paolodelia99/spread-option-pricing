@@ -4,7 +4,7 @@
 
 #include "MCEngine.h"
 
-template<typename Real>
+template<std::floating_point Real>
 std::vector<Real> createCorrelatedVec(std::vector<Real>& v1, std::vector<Real>& v2, Real rho)
 {
     std::vector<Real> res(v1.size());
@@ -17,7 +17,7 @@ std::vector<Real> createCorrelatedVec(std::vector<Real>& v1, std::vector<Real>& 
     return res;
 }
 
-template <typename Real>
+template <std::floating_point Real>
 MCEngine<Real>::MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigned int seed)
     :num_sim_(num_sim), n_timesteps_(n_timesteps), seed_(seed)
 {
@@ -25,14 +25,14 @@ MCEngine<Real>::MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigne
     normal_distribution_ = std::normal_distribution<Real>(MEAN, STD);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 Real MCEngine<Real>::operator()(SpreadOption<Real>& option)
 {
     auto final_values = _simulatePaths(option);
     return _computeValue(option, final_values.first, final_values.second);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(SpreadOption<Real>& option)
 {
     std::vector<Real> final_s1(num_sim_), final_s2(num_sim_);
@@ -66,7 +66,7 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(S
     return std::pair(final_s1, final_s2);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real>& final_s1, std::vector<Real>& final_s2)
 {
     Real payoffSum = 0.0;
@@ -83,7 +83,7 @@ Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real>
     return undisc_payoff * exp(-r * time_to_exp);
 }
 
-template<typename Real>
+template<std::floating_point Real>
 std::vector<Real> MCEngine<Real>::_generateNormalRandomVec()
 {
     std::vector<Real> rndVec(num_sim_);

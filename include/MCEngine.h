@@ -5,16 +5,15 @@
 #ifndef MCENGINE_H
 #define MCENGINE_H
 #include <random>
+#include <concepts>
 
 #include "SpreadOption.h"
 
 constexpr double MEAN = 0.0;
 constexpr double STD = 1.0;
 
-template<typename Real>
+template<std::floating_point Real>
 class MCEngine {
-    static_assert(std::is_floating_point<Real>::value, "Real must be a floating point type");
-
 public:
     MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigned int seed);
     ~MCEngine() = default;

@@ -6,20 +6,20 @@
 #include "MathUtils.h"
 
 
-template <typename Real>
+template <std::floating_point Real>
 MargrabeOption<Real>::MargrabeOption(SpreadMarketData<Real>* spd_mkt, Real vol_s1, Real vol_s2, Real discount_rate,
     Real corr)
         :SpreadOption<Real>(spd_mkt, 0.0, vol_s1, vol_s2, discount_rate, corr)
 {
 }
 
-template <typename Real>
+template <std::floating_point Real>
 MargrabeOption<Real>::~MargrabeOption()
 {
     delete this->spd_mkt_;
 }
 
-template <typename Real>
+template <std::floating_point Real>
 MargrabeOption<Real>::MargrabeOption(const MargrabeOption& other)
     :MargrabeOption(new SpreadMarketData<Real>(
         new Real(other.getCurrentAsset1Price()),
@@ -33,7 +33,7 @@ MargrabeOption<Real>::MargrabeOption(const MargrabeOption& other)
 {
 }
 
-template <typename Real>
+template <std::floating_point Real>
 MargrabeOption<Real>& MargrabeOption<Real>::operator=(const MargrabeOption& other)
 {
     if (this == &other)
@@ -52,7 +52,7 @@ MargrabeOption<Real>& MargrabeOption<Real>::operator=(const MargrabeOption& othe
     return *this;
 }
 
-template <typename Real>
+template <std::floating_point Real>
 Real MargrabeOption<Real>::getSpreadPrice()
 {
     var spot_1 = this->spd_mkt_->getCurrentAsset1Price();
@@ -63,39 +63,39 @@ Real MargrabeOption<Real>::getSpreadPrice()
     return static_cast<Real>(price);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 Real MargrabeOption<Real>::getCurrentAsset1Price() const
 {
     return this->spd_mkt_->getCurrentAsset1Price();
 }
 
-template <typename Real>
+template <std::floating_point Real>
 Real MargrabeOption<Real>::getCurrentAsset2Price() const
 {
     return this->spd_mkt_->getCurrentAsset2Price();
 }
 
-template <typename Real>
+template <std::floating_point Real>
 std::pair<Real, Real> MargrabeOption<Real>::getDeltas() const
 {
     auto [d_s1, d_s2] = _getDeltas(getCurrentAsset1Price(), getCurrentAsset2Price());
     return std::pair<Real, Real>(d_s1, d_s2);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 std::pair<Real, Real> MargrabeOption<Real>::getGammas() const
 {
     auto [dd_s1, dd_s2] = _getGammas(getCurrentAsset1Price(), getCurrentAsset2Price());
     return std::pair<Real, Real>(dd_s1, dd_s2);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 Real MargrabeOption<Real>::getCrossGamma() const
 {
     return static_cast<Real>(_getCrossGamma(getCurrentAsset1Price(), getCurrentAsset2Price()));
 }
 
-template <typename Real>
+template <std::floating_point Real>
 var MargrabeOption<Real>::_getMargrabePrice(var s1, var s2, var t, var vol_s1, var vol_s2, var corr)
 {
     var d1 = computeD1(s1, s2, t, vol_s1, vol_s2, corr);
@@ -104,7 +104,7 @@ var MargrabeOption<Real>::_getMargrabePrice(var s1, var s2, var t, var vol_s1, v
     return s2 * cumulativeNormal(d1) - s1 * cumulativeNormal(d2);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 std::pair<var, var> MargrabeOption<Real>::_getDeltas(var spot_1, var spot_2) const
 {
     var time_to_exp = this->spd_mkt_->getTimeToExpiration();
@@ -118,7 +118,7 @@ std::pair<var, var> MargrabeOption<Real>::_getDeltas(var spot_1, var spot_2) con
     return std::pair<var, var>(d_s1, d_s2);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 std::pair<var, var> MargrabeOption<Real>::_getGammas(var spot_1, var spot_2) const
 {
     std::pair<var, var> deltas = _getDeltas(spot_1, spot_2);
@@ -129,7 +129,7 @@ std::pair<var, var> MargrabeOption<Real>::_getGammas(var spot_1, var spot_2) con
     return std::pair<var, var>(dd_s1, dd_s2);
 }
 
-template <typename Real>
+template <std::floating_point Real>
 var MargrabeOption<Real>::_getCrossGamma(var spot_1, var spot_2) const
 {
     std::pair<var, var> deltas = _getDeltas(spot_1, spot_2);

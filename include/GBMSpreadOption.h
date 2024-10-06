@@ -8,7 +8,7 @@
 #include "MCEngine.h"
 
 
-template<typename Real>
+template<std::floating_point Real>
 class GBMSpreadOption : public SpreadOption<Real>
 {
 public:
