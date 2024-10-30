@@ -4,10 +4,10 @@
 
 #ifndef MCENGINE_H
 #define MCENGINE_H
-#include <random>
 #include <concepts>
 
 #include "SpreadOption.h"
+#include "MCEngine/ThreadPool.h"
 
 constexpr double MEAN = 0.0;
 constexpr double STD = 1.0;
@@ -15,7 +15,7 @@ constexpr double STD = 1.0;
 template<std::floating_point Real>
 class MCEngine {
 public:
-    MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigned int seed);
+    MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads);
     ~MCEngine() = default;
     Real operator()(SpreadOption<Real> &option);
 
@@ -26,9 +26,7 @@ private:
 
     unsigned int n_timesteps_;
     unsigned int num_sim_;
-    unsigned int seed_;
-    std::mt19937 generator_;
-    std::normal_distribution<Real> normal_distribution_;
+    ThreadPool pool_;
 };
 
 

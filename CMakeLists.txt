@@ -30,8 +30,9 @@ add_executable(runTests ${TEST_SOURCES})
 
 # Compiler options
 ## Flags
-set(CXX_FLAGS "-O3")
+set(CXX_FLAGS "-O3 -march=native")
 if(USE_CLANG STREQUAL "OFF")
+        set(CXX_FLAGS "${CXX_FLAGS} -ftree-vectorize")
         set(CXX_FLAGS "${CXX_FLAGS} -floop-parallelize-all")
         set(CXX_FLAGS "${CXX_FLAGS} -ftree-parallelize-loops=4")
 else()

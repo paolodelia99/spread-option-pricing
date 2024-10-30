@@ -38,8 +38,8 @@ protected:
     MargrabeOption<Real>* exchange_option_;
 };
 
-typedef BasicExchangeOption<float> BasicExchangeOptionF;
-typedef BasicExchangeOption<double> BasicExchangeOptionD;
+using BasicExchangeOptionF = BasicExchangeOption<float>;
+using BasicExchangeOptionD = BasicExchangeOption<double>;
 
 TEST_F(BasicExchangeOptionF, BasicPriceAssertion)
 {
