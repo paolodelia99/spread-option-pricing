@@ -1,8 +1,15 @@
 //
 // Created by paolodelia on 7/17/24.
 //
+#include <execution>
+#include <future>
+#include <random>
 
-#include "MCEngine.h"
+#include "MCEngine/MCEngine.h"
+
+template <std::floating_point Real>
+MCEngine<Real>::MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads)
+    :num_sim_(num_sim), n_timesteps_(n_timesteps), pool_(std::move(ThreadPool(n_threads))) {}
 
 template<std::floating_point Real>
 std::vector<Real> createCorrelatedVec(std::vector<Real>& v1, std::vector<Real>& v2, Real rho)
@@ -18,24 +25,17 @@ std::vector<Real> createCorrelatedVec(std::vector<Real>& v1, std::vector<Real>& 
 }
 
 template <std::floating_point Real>
-MCEngine<Real>::MCEngine(unsigned int num_sim, unsigned int n_timesteps, unsigned int seed)
-    :num_sim_(num_sim), n_timesteps_(n_timesteps), seed_(seed)
-{
-    generator_ = std::mt19937(seed_);
-    normal_distribution_ = std::normal_distribution<Real>(MEAN, STD);
-}
-
-template <std::floating_point Real>
 Real MCEngine<Real>::operator()(SpreadOption<Real>& option)
 {
-    auto final_values = _simulatePaths(option);
-    return _computeValue(option, final_values.first, final_values.second);
+    auto [final_s1, final_s2] = _simulatePaths(option);
+    return _computeValue(option, final_s1, final_s2);
 }
 
 template <std::floating_point Real>
 std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(SpreadOption<Real>& option)
 {
     std::vector<Real> final_s1(num_sim_), final_s2(num_sim_);
+    std::vector<std::future<std::tuple<Real, Real>>> results(num_sim_);
 
     const Real dt = option.getExpiration() / n_timesteps_;
     const Real sqrt_dt = sqrt(dt);
@@ -43,7 +43,7 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(S
     const Real vol_s1 = option.getVolAsset1();
     const Real vol_s2 = option.getVolAsset2();
 
-    for (int i = 0; i < num_sim_; ++i)
+    auto generateBiGBM = [&] -> std::tuple<Real, Real>
     {
         Real s1_t = option.getCurrentAsset1Price();
         Real s2_t = option.getCurrentAsset2Price();
@@ -59,9 +59,25 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(S
             s2_t = s2_t * exp((r - 0.5 * vol_s2 * vol_s2) * dt + vol_s2 * w2[j] * sqrt_dt);
         }
 
-        final_s1[i] = s1_t;
-        final_s2[i] = s2_t;
+        return std::make_tuple(s1_t, s2_t);
+    };
+
+    for (int i = 0; i < num_sim_; ++i)
+    {
+        results[i] = pool_.enqueue([&]
+        {
+            return generateBiGBM();
+        });
     }
+
+    int i = 0;
+    std::for_each(results.begin(), results.end(), [&final_s1, &final_s2, &i](std::future<std::tuple<Real, Real>>& res)
+    {
+        auto [f_s1, f_s2] = res.get();
+        final_s1[i] = f_s1;
+        final_s2[i] = f_s2;
+        ++i;
+    });
 
     return std::pair(final_s1, final_s2);
 }
@@ -73,11 +89,13 @@ Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real>
     const Real k = option.getStrikePrice();
     const Real r = option.getDiscoutRate();
     const Real time_to_exp = option.getExpiration();
+    std::vector<Real> tmp_res(num_sim_);
 
-    for (int i = 0; i < final_s1.size(); ++i)
-    {
-        payoffSum += std::max(static_cast<double>(final_s2[i] - final_s1[i] - k), 0.0);
-    }
+    std::transform(std::execution::par_unseq, final_s2.begin(), final_s2.end(),
+        final_s1.begin(), tmp_res.begin(), [&payoffSum, &k](Real& s2, Real& s1) {
+            payoffSum += std::max<Real>(s2 - s1 - k, 0.0);
+            return 0.0;
+    });
 
     const Real undisc_payoff = payoffSum / num_sim_;
     return undisc_payoff * exp(-r * time_to_exp);
@@ -86,8 +104,11 @@ Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real>
 template<std::floating_point Real>
 std::vector<Real> MCEngine<Real>::_generateNormalRandomVec()
 {
+    std::mt19937 generator;
+    std::normal_distribution<float> normal_dist;
+
     std::vector<Real> rndVec(num_sim_);
-    std::generate(rndVec.begin(), rndVec.end(), [&]() {return normal_distribution_(generator_); });
+    std::generate(rndVec.begin(), rndVec.end(), [&] {return normal_dist(generator); });
 
     return rndVec;
 }

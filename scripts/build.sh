@@ -12,7 +12,7 @@ help() {
                    [-v|--version] - the version of the compiler
                    [-h|--help] - Output the help message 
     "
-    exit 1
+    return
 }
 
 POSITIONAL_ARGS=()
