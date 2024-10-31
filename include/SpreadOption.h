@@ -10,11 +10,19 @@ using namespace autodiff;
 template<std::floating_point Real>
 class SpreadOption
 {
-    static_assert(std::is_floating_point<Real>::value, "Real must be a floating point type");
-
 public:
-    SpreadOption(SpreadMarketData<Real>* spd_mkt, Real strike_price, Real vol_s1, Real vol_s2, Real discount_rate,
-                Real corr);
+    SpreadOption();
+
+    SpreadOption(std::shared_ptr<SpreadMarketData<Real>> spd_mkt, Real strike_price,
+                Real vol_s1, Real vol_s2, Real discount_rate, Real corr);
+
+    SpreadOption(const SpreadOption& other);
+
+    SpreadOption(SpreadOption&& other) noexcept;
+
+    SpreadOption& operator=(const SpreadOption& other);
+
+    SpreadOption& operator=(SpreadOption&& other) noexcept;
 
     virtual ~SpreadOption() = default;
 
@@ -43,7 +51,7 @@ public:
     virtual Real getCrossGamma() const = 0;
 
 protected:
-    SpreadMarketData<Real>* spd_mkt_;
+    std::shared_ptr<SpreadMarketData<Real>> spd_mkt_;
     Real strike_price_;
     Real vol_s1_;
     Real vol_s2_;
