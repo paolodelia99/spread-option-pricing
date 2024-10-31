@@ -12,16 +12,26 @@
 constexpr double MEAN = 0.0;
 constexpr double STD = 1.0;
 
-template<std::floating_point Real>
 class MCEngine {
 public:
     MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads);
     ~MCEngine() = default;
-    Real operator()(SpreadOption<Real> &option);
+    MCEngine(MCEngine& other_engine);
+    MCEngine(MCEngine&& other_engine) noexcept;
+    MCEngine& operator=(MCEngine& other_engine);
+    MCEngine& operator=(MCEngine&& other_engine) noexcept;
+
+    template<std::floating_point Real>
+    Real calculatePrice(SpreadOption<Real> &option);
 
 private:
+    template<std::floating_point Real>
     std::pair<std::vector<Real>, std::vector<Real>> _simulatePaths(SpreadOption<Real>& option);
+
+    template<std::floating_point Real>
     Real _computeValue(SpreadOption<Real>& option, std::vector<Real>& final_s1, std::vector<Real>& final_s2);
+
+    template<std::floating_point Real>
     std::vector<Real> _generateNormalRandomVec();
 
     unsigned int n_timesteps_;

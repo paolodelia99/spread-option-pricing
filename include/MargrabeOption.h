@@ -17,14 +17,20 @@ template<std::floating_point Real>
 class MargrabeOption: public SpreadOption<Real>
 {
 public:
-    MargrabeOption(SpreadMarketData<Real>* spd_mkt, Real vol_s1, Real vol_s2, Real discount_rate,
+    MargrabeOption();
+
+    MargrabeOption(std::shared_ptr<SpreadMarketData<Real>> spd_mkt, Real vol_s1, Real vol_s2, Real discount_rate,
                 Real corr);
 
     ~MargrabeOption() override;
 
     MargrabeOption(const MargrabeOption& other);
 
+    MargrabeOption(MargrabeOption&& other) noexcept;
+
     MargrabeOption& operator=(const MargrabeOption& other);
+
+    MargrabeOption& operator=(MargrabeOption&& other) noexcept;
 
     Real getSpreadPrice() override;
 

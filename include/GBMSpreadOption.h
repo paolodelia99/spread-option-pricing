@@ -12,14 +12,20 @@ template<std::floating_point Real>
 class GBMSpreadOption : public SpreadOption<Real>
 {
 public:
-    GBMSpreadOption(SpreadMarketData<Real>* spd_mkt, Real strike_price, Real vol_s1, Real vol_s2, Real discount_rate,
-                Real corr);
+    GBMSpreadOption();
+
+    GBMSpreadOption(std::shared_ptr<SpreadMarketData<Real>> spd_mkt, Real strike_price, Real vol_s1, Real vol_s2,
+                    Real discount_rate, Real corr);
 
     ~GBMSpreadOption() override;
 
-    GBMSpreadOption(const GBMSpreadOption& other);
+    GBMSpreadOption(GBMSpreadOption& other);
 
-    GBMSpreadOption& operator=(const GBMSpreadOption& other);
+    GBMSpreadOption(GBMSpreadOption&& other) noexcept;
+
+    GBMSpreadOption& operator=(GBMSpreadOption& other);
+
+    GBMSpreadOption& operator=(GBMSpreadOption&& other) noexcept;
 
     Real getSpreadPrice() override;
 
@@ -30,7 +36,7 @@ public:
     Real getCrossGamma() const override;
 
 private:
-    MCEngine<Real>* mc_engine_;
+    MCEngine mc_engine_;
 };
 
 

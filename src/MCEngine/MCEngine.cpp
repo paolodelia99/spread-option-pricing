@@ -7,9 +7,36 @@
 
 #include "MCEngine/MCEngine.h"
 
-template <std::floating_point Real>
-MCEngine<Real>::MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads)
-    :num_sim_(num_sim), n_timesteps_(n_timesteps), pool_(std::move(ThreadPool(n_threads))) {}
+MCEngine::MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads = 4)
+    : n_timesteps_(n_timesteps), num_sim_(num_sim), pool_(std::move(ThreadPool(n_threads))) {}
+
+MCEngine::MCEngine(MCEngine& other_engine)
+    : n_timesteps_(other_engine.n_timesteps_), num_sim_(other_engine.num_sim_), pool_(std::move(other_engine.pool_)) {}
+
+MCEngine::MCEngine(MCEngine&& other_engine) noexcept
+    :n_timesteps_(other_engine.n_timesteps_), num_sim_(other_engine.num_sim_), pool_(std::move(other_engine.pool_)) {}
+
+MCEngine& MCEngine::operator=(MCEngine& other_engine)
+{
+    if (this != &other_engine)
+    {
+        n_timesteps_ = other_engine.n_timesteps_;
+        num_sim_ = other_engine.num_sim_;
+        pool_ = std::move(other_engine.pool_);
+    }
+    return *this;
+}
+
+MCEngine& MCEngine::operator=(MCEngine&& other_engine) noexcept
+{
+    if (this != &other_engine)
+    {
+        n_timesteps_ = other_engine.n_timesteps_;
+        num_sim_ = other_engine.num_sim_;
+        pool_ = std::move(other_engine.pool_);
+    }
+    return *this;
+}
 
 template<std::floating_point Real>
 std::vector<Real> createCorrelatedVec(std::vector<Real>& v1, std::vector<Real>& v2, Real rho)
@@ -25,14 +52,14 @@ std::vector<Real> createCorrelatedVec(std::vector<Real>& v1, std::vector<Real>& 
 }
 
 template <std::floating_point Real>
-Real MCEngine<Real>::operator()(SpreadOption<Real>& option)
+Real MCEngine::calculatePrice(SpreadOption<Real>& option)
 {
     auto [final_s1, final_s2] = _simulatePaths(option);
     return _computeValue(option, final_s1, final_s2);
 }
 
 template <std::floating_point Real>
-std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(SpreadOption<Real>& option)
+std::pair<std::vector<Real>, std::vector<Real>> MCEngine::_simulatePaths(SpreadOption<Real>& option)
 {
     std::vector<Real> final_s1(num_sim_), final_s2(num_sim_);
     std::vector<std::future<std::tuple<Real, Real>>> results(num_sim_);
@@ -47,8 +74,8 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(S
     {
         Real s1_t = option.getCurrentAsset1Price();
         Real s2_t = option.getCurrentAsset2Price();
-        std::vector<Real> u1 = _generateNormalRandomVec();
-        std::vector<Real> u2 = _generateNormalRandomVec();
+        std::vector<Real> u1 = _generateNormalRandomVec<Real>();
+        std::vector<Real> u2 = _generateNormalRandomVec<Real>();
 
         std::vector<Real> w1 = std::vector(u1);
         std::vector<Real> w2 = createCorrelatedVec(u1, u2, option.getCorrelation());
@@ -83,7 +110,7 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine<Real>::_simulatePaths(S
 }
 
 template <std::floating_point Real>
-Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real>& final_s1, std::vector<Real>& final_s2)
+Real MCEngine::_computeValue(SpreadOption<Real>& option, std::vector<Real>& final_s1, std::vector<Real>& final_s2)
 {
     Real payoffSum = 0.0;
     const Real k = option.getStrikePrice();
@@ -102,7 +129,7 @@ Real MCEngine<Real>::_computeValue(SpreadOption<Real>& option, std::vector<Real>
 }
 
 template<std::floating_point Real>
-std::vector<Real> MCEngine<Real>::_generateNormalRandomVec()
+std::vector<Real> MCEngine::_generateNormalRandomVec()
 {
     std::mt19937 generator;
     std::normal_distribution<float> normal_dist;
@@ -113,5 +140,5 @@ std::vector<Real> MCEngine<Real>::_generateNormalRandomVec()
     return rndVec;
 }
 
-template class MCEngine<float>;
-template class MCEngine<double>;
+template float MCEngine::calculatePrice<float>(SpreadOption<float>&);
+template double MCEngine::calculatePrice<double>(SpreadOption<double>&);

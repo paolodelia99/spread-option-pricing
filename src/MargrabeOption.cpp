@@ -7,29 +7,23 @@
 
 
 template <std::floating_point Real>
-MargrabeOption<Real>::MargrabeOption(SpreadMarketData<Real>* spd_mkt, Real vol_s1, Real vol_s2, Real discount_rate,
-    Real corr)
-        :SpreadOption<Real>(spd_mkt, 0.0, vol_s1, vol_s2, discount_rate, corr)
-{
-}
+MargrabeOption<Real>::MargrabeOption() : SpreadOption<Real>() {}
 
 template <std::floating_point Real>
-MargrabeOption<Real>::~MargrabeOption()
-{
-    delete this->spd_mkt_;
-}
+MargrabeOption<Real>::MargrabeOption(std::shared_ptr<SpreadMarketData<Real>> spd_mkt, Real vol_s1, Real vol_s2,
+                    Real discount_rate, Real corr)
+        :SpreadOption<Real>(spd_mkt, 0.0, vol_s1, vol_s2, discount_rate, corr) {}
+
+template <std::floating_point Real>
+MargrabeOption<Real>::~MargrabeOption() = default;
 
 template <std::floating_point Real>
 MargrabeOption<Real>::MargrabeOption(const MargrabeOption& other)
-    :MargrabeOption(new SpreadMarketData<Real>(
-        new Real(other.getCurrentAsset1Price()),
-        new Real(other.getCurrentAsset2Price()),
-        new Real(other.getExpiration())),
-        other.getVolAsset1(),
-        other.getVolAsset2(),
-        other.getDiscoutRate(),
-        other.getCorrelation()
-        )
+    :SpreadOption<Real>(other) {}
+
+template <std::floating_point Real>
+MargrabeOption<Real>::MargrabeOption(MargrabeOption&& other) noexcept
+: SpreadOption<Real>(other)
 {
 }
 
@@ -39,15 +33,18 @@ MargrabeOption<Real>& MargrabeOption<Real>::operator=(const MargrabeOption& othe
     if (this == &other)
         return *this;
 
-    auto s1 = new Real(other.getCurrentAsset1Price());
-    auto s2 = new Real(other.getCurrentAsset2Price());
-    auto t = new Real(other.getExpiration());
-    delete this->spd_mkt_;
-    this->spd_mkt_ = new SpreadMarketData<Real>(s1, s2, t);
-    this->vol_s1_ = other.getVolAsset1();
-    this->vol_s2_ = other.getVolAsset2();
-    this->discount_rate_ = other.getDiscoutRate();
-    this->corr_ = other.getCorrelation();
+    SpreadOption<Real>::operator=(other);
+
+    return *this;
+}
+
+template <std::floating_point Real>
+MargrabeOption<Real>& MargrabeOption<Real>::operator=(MargrabeOption&& other) noexcept
+{
+    if (this != &other)
+    {
+        SpreadOption<Real>::operator=(std::move(other));
+    }
 
     return *this;
 }
