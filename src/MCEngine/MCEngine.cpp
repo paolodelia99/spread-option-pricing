@@ -61,7 +61,7 @@ Real MCEngine::calculatePrice(SpreadOption<Real>& option)
 template <std::floating_point Real>
 std::pair<std::vector<Real>, std::vector<Real>> MCEngine::_simulatePaths(SpreadOption<Real>& option)
 {
-    ThreadPool pool(4);
+    ThreadPool pool(N_THREADS);
     std::vector<Real> final_s1(num_sim_), final_s2(num_sim_);
     std::vector<std::future<std::tuple<Real, Real>>> results(num_sim_);
 
