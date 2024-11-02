@@ -36,7 +36,7 @@ private:
 
     unsigned int n_timesteps_;
     unsigned int num_sim_;
-    ThreadPool pool_;
+    //ThreadPool pool_;
 };
 
 

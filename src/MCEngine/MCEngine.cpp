@@ -8,13 +8,13 @@
 #include "MCEngine/MCEngine.h"
 
 MCEngine::MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads = 4)
-    : n_timesteps_(n_timesteps), num_sim_(num_sim), pool_(std::move(ThreadPool(n_threads))) {}
+    : n_timesteps_(n_timesteps), num_sim_(num_sim) {}
 
 MCEngine::MCEngine(MCEngine& other_engine)
-    : n_timesteps_(other_engine.n_timesteps_), num_sim_(other_engine.num_sim_), pool_(std::move(other_engine.pool_)) {}
+    : n_timesteps_(other_engine.n_timesteps_), num_sim_(other_engine.num_sim_) {}
 
 MCEngine::MCEngine(MCEngine&& other_engine) noexcept
-    :n_timesteps_(other_engine.n_timesteps_), num_sim_(other_engine.num_sim_), pool_(std::move(other_engine.pool_)) {}
+    :n_timesteps_(other_engine.n_timesteps_), num_sim_(other_engine.num_sim_) {}
 
 MCEngine& MCEngine::operator=(MCEngine& other_engine)
 {
@@ -22,7 +22,7 @@ MCEngine& MCEngine::operator=(MCEngine& other_engine)
     {
         n_timesteps_ = other_engine.n_timesteps_;
         num_sim_ = other_engine.num_sim_;
-        pool_ = std::move(other_engine.pool_);
+        //pool_ = std::move(other_engine.pool_);
     }
     return *this;
 }
@@ -33,7 +33,7 @@ MCEngine& MCEngine::operator=(MCEngine&& other_engine) noexcept
     {
         n_timesteps_ = other_engine.n_timesteps_;
         num_sim_ = other_engine.num_sim_;
-        pool_ = std::move(other_engine.pool_);
+        //pool_ = std::move(other_engine.pool_);
     }
     return *this;
 }
@@ -61,6 +61,7 @@ Real MCEngine::calculatePrice(SpreadOption<Real>& option)
 template <std::floating_point Real>
 std::pair<std::vector<Real>, std::vector<Real>> MCEngine::_simulatePaths(SpreadOption<Real>& option)
 {
+    ThreadPool pool(4);
     std::vector<Real> final_s1(num_sim_), final_s2(num_sim_);
     std::vector<std::future<std::tuple<Real, Real>>> results(num_sim_);
 
@@ -91,7 +92,7 @@ std::pair<std::vector<Real>, std::vector<Real>> MCEngine::_simulatePaths(SpreadO
 
     for (int i = 0; i < num_sim_; ++i)
     {
-        results[i] = pool_.enqueue([&]
+        results[i] = pool.enqueue([&]
         {
             return generateBiGBM();
         });
@@ -131,8 +132,9 @@ Real MCEngine::_computeValue(SpreadOption<Real>& option, std::vector<Real>& fina
 template<std::floating_point Real>
 std::vector<Real> MCEngine::_generateNormalRandomVec()
 {
-    std::mt19937 generator;
-    std::normal_distribution<float> normal_dist;
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::normal_distribution<Real> normal_dist(MEAN, STD);
 
     std::vector<Real> rndVec(num_sim_);
     std::generate(rndVec.begin(), rndVec.end(), [&] {return normal_dist(generator); });
