@@ -6,7 +6,6 @@
 
 constexpr unsigned int NUM_SIM = 1000;
 constexpr unsigned int ANNUAL_TRADING_DAYS = 252;
-constexpr unsigned int N_THREADS = 4;
 
 template <std::floating_point Real>
 GBMSpreadOption<Real>::GBMSpreadOption() : SpreadOption<Real>(), mc_engine_(1000, 252, 4) {}
@@ -56,7 +55,7 @@ GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(GBMSpreadOption& other)
 
 template <std::floating_point Real>
 GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(GBMSpreadOption&& other) noexcept
-{
+{par_unseq
     if (this != &other)
     {
         SpreadOption<Real>::operator=(std::move(other));

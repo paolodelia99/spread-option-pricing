@@ -11,6 +11,7 @@
 
 constexpr double MEAN = 0.0;
 constexpr double STD = 1.0;
+constexpr int N_THREADS = 4;
 
 class MCEngine {
 public:
