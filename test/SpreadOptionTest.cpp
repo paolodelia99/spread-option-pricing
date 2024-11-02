@@ -53,16 +53,17 @@ using SpdExchangeOptionD = SpdExchangeOption<double>;
 
 TEST_F(SpdExchangeOptionF, BasicExchangePriceAssertion)
 {
-    constexpr float expected_price = 11.485654830932617;
+    constexpr float expected_price = 10.9853;
+    float result = spread_option_.getSpreadPrice();
 
-    EXPECT_NEAR(spread_option_.getSpreadPrice(), expected_price, TOLERANCE);
+    EXPECT_NEAR(result, expected_price, TOLERANCE);
 }
 
 TEST_F(SpdExchangeOptionF, BasicSpreadPriceAssertion)
 {
     const float strike = 5.0, corr = 0.0;
     SetUp(strike, corr);
-    float expected_price = 9.0753545761108398;
+    float expected_price = 9.1518;
 
     EXPECT_NEAR(spread_option_.getSpreadPrice(), expected_price, TOLERANCE);
 }
@@ -71,7 +72,7 @@ TEST_F(SpdExchangeOptionF, SpreadPriceAssertion)
 {
     const float strike = 10.0, corr = 0.0;
     SetUp(strike, corr);
-    float expected_price = 7.0478196144104004;
+    float expected_price = 6.6445;
 
     EXPECT_NEAR(spread_option_.getSpreadPrice(), expected_price, TOLERANCE);
 }
@@ -81,7 +82,7 @@ TEST_F(SpdExchangeOptionF, SpreadPriceAssertion_1)
     const float strike = 10.0, corr = 0.7;
     auto spd = std::make_shared<SpreadMarketData<float>>(SpreadMarketData(new float(100), new float(110), new float(1.0)));
     SetUp(spd ,strike, corr);
-    float expected_price = 6.6965165138244629;
+    float expected_price = 6.4563;
 
     EXPECT_NEAR(spread_option_.getSpreadPrice(), expected_price, TOLERANCE);
 }

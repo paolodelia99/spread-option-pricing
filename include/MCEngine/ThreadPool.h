@@ -17,6 +17,8 @@
 class ThreadPool {
 public:
 
+    ThreadPool() = default;
+
     explicit ThreadPool(size_t n_workers, bool set_thread_affinity = false) {
         for (size_t i = 0; i < n_workers; ++i)
         {
@@ -129,7 +131,6 @@ private:
         }
     }
 
-private:
     std::mutex mutex_;
     std::condition_variable cv_;
     std::vector<std::thread> workers_;
