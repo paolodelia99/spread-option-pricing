@@ -26,12 +26,11 @@ enable_testing()
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 
 # Create an executable for the tests
-add_executable(runTests ${TEST_SOURCES}
-        include/testutils/TestUtils.h)
+add_executable(runTests ${TEST_SOURCES})
 
 # Compiler options
 ## Flags
-if (CMAKE_BUILD_TYPE EQUAL "Release")
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
         # Optimize flags for Release build
         set(CXX_FLAGS "-O3 -march=native -lpthread")
         if(USE_CLANG STREQUAL "OFF")
@@ -42,7 +41,7 @@ if (CMAKE_BUILD_TYPE EQUAL "Release")
                 # SET(CXX_FLAGS "${CXX_FLAGS} -march=native -Rpass=loop-vectorize") #TODO: find ways to vectorize the loops
         endif()
 else()
-        set(CXX_FLAGS "-DDEBUG")
+        set(CXX_FLAGS "${CXX_FLAGS} -DDEBUG")
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CXX_FLAGS}" CACHE STRING "Set C++ Compiler Flags" FORCE)
