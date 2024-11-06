@@ -119,7 +119,7 @@ Real MCEngine::_computeValue(SpreadOption<Real>& option, std::vector<Real>& fina
     const Real time_to_exp = option.getExpiration();
     std::vector<Real> tmp_res(num_sim_);
 
-    std::transform(std::execution::par_unseq, final_s2.begin(), final_s2.end(),
+    std::transform(std::execution::par, final_s2.begin(), final_s2.end(),
         final_s1.begin(), tmp_res.begin(), [&payoffSum, &k](Real& s2, Real& s1) {
             payoffSum += std::max<Real>(s2 - s1 - k, 0.0);
             return 0.0;
