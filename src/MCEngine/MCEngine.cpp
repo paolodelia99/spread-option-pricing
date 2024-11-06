@@ -7,7 +7,7 @@
 
 #include "MCEngine/MCEngine.h"
 
-MCEngine::MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads = 4)
+MCEngine::MCEngine(unsigned int num_sim, unsigned int n_timesteps)
     : n_timesteps_(n_timesteps), num_sim_(num_sim) {}
 
 MCEngine::MCEngine(MCEngine& other_engine)

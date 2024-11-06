@@ -15,7 +15,7 @@ constexpr int N_THREADS = 4;
 
 class MCEngine {
 public:
-    MCEngine(unsigned int num_sim, unsigned int n_timesteps, size_t n_threads);
+    MCEngine(unsigned int num_sim, unsigned int n_timesteps);
     ~MCEngine() = default;
     MCEngine(MCEngine& other_engine);
     MCEngine(MCEngine&& other_engine) noexcept;

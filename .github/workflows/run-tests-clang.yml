@@ -1,4 +1,4 @@
-name: Run tests
+name: Run tests Release clang
 
 on:
   pull_request:
