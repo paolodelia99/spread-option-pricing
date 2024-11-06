@@ -5,17 +5,13 @@
 #include "GBMSpreadOption.h"
 #include "MathUtils.h"
 
-constexpr unsigned int NUM_SIM = 20000;
-constexpr unsigned int ANNUAL_TRADING_DAYS = 252;
-
 template <std::floating_point Real>
-GBMSpreadOption<Real>::GBMSpreadOption() : SpreadOption<Real>(), mc_engine_(1000, 252, 4) {}
+GBMSpreadOption<Real>::GBMSpreadOption() : SpreadOption<Real>() {}
 
 template<std::floating_point Real>
 GBMSpreadOption<Real>::GBMSpreadOption(std::shared_ptr<SpreadMarketData<Real>> spd_mkt, Real strike_price,
     Real vol_s1, Real vol_s2, Real discount_rate, Real corr)
-    : SpreadOption<Real>(spd_mkt, strike_price, vol_s1, vol_s2, discount_rate, corr),
-    mc_engine_(NUM_SIM, static_cast<int>(spd_mkt->getTimeToExpiration() * ANNUAL_TRADING_DAYS), 4) {}
+    : SpreadOption<Real>(spd_mkt, strike_price, vol_s1, vol_s2, discount_rate, corr) {}
 
 template<std::floating_point Real>
 GBMSpreadOption<Real>::~GBMSpreadOption() {}
@@ -23,15 +19,12 @@ GBMSpreadOption<Real>::~GBMSpreadOption() {}
 template <std::floating_point Real>
 GBMSpreadOption<Real>::GBMSpreadOption(GBMSpreadOption& other)
 :SpreadOption<Real>(other.spd_mkt_, other.strike_price_,
-        other.vol_s1_, other.vol_s2_, other.discount_rate_, other.corr_), mc_engine_(other.mc_engine_) {}
+        other.vol_s1_, other.vol_s2_, other.discount_rate_, other.corr_) {}
 
 template <std::floating_point Real>
 GBMSpreadOption<Real>::GBMSpreadOption(GBMSpreadOption&& other) noexcept
     : SpreadOption<Real>(other.spd_mkt_, other.strike_price_,
-        other.vol_s1_, other.vol_s2_, other.discount_rate_, other.corr_),
-    mc_engine_(std::move(other.mc_engine_))
-{
-}
+        other.vol_s1_, other.vol_s2_, other.discount_rate_, other.corr_) {}
 
 template <std::floating_point Real>
 GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(GBMSpreadOption& other)
@@ -39,7 +32,6 @@ GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(GBMSpreadOption& other)
     if (this != &other)
     {
         SpreadOption<Real>::operator=(other);
-        mc_engine_ = other.mc_engine_;
     }
     return *this;
 }
@@ -50,7 +42,6 @@ GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(GBMSpreadOption&& other)
     if (this != &other)
     {
         SpreadOption<Real>::operator=(std::move(other));
-        mc_engine_ = std::move(other.mc_engine_);
     }
     return *this;
 }

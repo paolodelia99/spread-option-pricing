@@ -34,9 +34,6 @@ public:
     std::pair<Real, Real> getGammas() const override;
 
     Real getCrossGamma() const override;
-
-private:
-    MCEngine mc_engine_;
 };
 
 
