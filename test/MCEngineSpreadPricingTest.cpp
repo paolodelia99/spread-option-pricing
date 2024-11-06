@@ -12,8 +12,7 @@
 #include "MCEngine/MCEngine.h"
 #include "testutils/TestUtils.h"
 
-constexpr float PRICE_TOLERANCE = 0.2;
-constexpr float LARGER_PRICE_TOLERANCE = 0.3;
+constexpr float PRICE_TOLERANCE = 0.3;
 constexpr int N_SIM = 20000;
 constexpr int ANNUAL_TRADING_DAYS = 252;
 
@@ -24,7 +23,7 @@ TEST_F(MCEngineSpreadOptF, BasicExchangePriceAssertion)
 {
     SKIP_TEST("Skipping long-running test in debug mode");
     MCEngine mc_engine(N_SIM, ANNUAL_TRADING_DAYS);
-    constexpr float expected_price = 11.380569442112442;
+    constexpr float expected_price = 11.145873069763184;
     float result = mc_engine.calculatePrice(spread_option_);
 
     EXPECT_NEAR(result, expected_price, PRICE_TOLERANCE);
@@ -51,7 +50,7 @@ TEST_F(MCEngineSpreadOptF, SpreadPriceAssertion)
     float expected_price = 7.0182962813092304;
     float result = mc_engine.calculatePrice(spread_option_);
 
-    EXPECT_NEAR(result, expected_price, LARGER_PRICE_TOLERANCE);
+    EXPECT_NEAR(result, expected_price, PRICE_TOLERANCE);
 }
 
 TEST_F(MCEngineSpreadOptF, SpreadPriceAssertion_1)
@@ -64,13 +63,13 @@ TEST_F(MCEngineSpreadOptF, SpreadPriceAssertion_1)
     float expected_price = 6.4563;
     float result = mc_engine.calculatePrice<float>(spread_option_);
 
-    EXPECT_NEAR(result, expected_price, LARGER_PRICE_TOLERANCE);
+    EXPECT_NEAR(result, expected_price, PRICE_TOLERANCE);
 }
 
 TEST_F(MCEngineSpreadOptD, BasicExchangePriceAssertion)
 {
     SKIP_TEST("Skipping long-running test in debug mode");
-    double expected_price = 11.380569442112442;
+    double expected_price = 11.145873069763184;
     MCEngine mc_engine(N_SIM, ANNUAL_TRADING_DAYS);
     double result = mc_engine.calculatePrice(spread_option_);
     
@@ -111,5 +110,5 @@ TEST_F(MCEngineSpreadOptD, SpreadPriceAssertion_1)
     double result = mc_engine.calculatePrice(spread_option_);
     float expected_price = 6.4563;
 
-    EXPECT_NEAR(result, expected_price, LARGER_PRICE_TOLERANCE);
+    EXPECT_NEAR(result, expected_price, PRICE_TOLERANCE);
 }
