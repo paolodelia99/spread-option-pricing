@@ -50,19 +50,19 @@ TEST_F(BasicExchangeOptionF, BasicPriceAssertion)
 TEST_F(BasicExchangeOptionF, BasicDeltaAssertion)
 {
     float expected_d_s1 = -0.4437684714794159, expected_d_s2 = 0.5562313795089722;
-    std::pair<float, float> d_s1_d_s2 = exchange_option_.getDeltas();
+    auto [d_s1, d_s2] = exchange_option_.getDeltas();
 
-    EXPECT_NEAR(d_s1_d_s2.first, expected_d_s1, TOLERANCE);
-    EXPECT_NEAR(d_s1_d_s2.second, expected_d_s2, TOLERANCE);
+    EXPECT_NEAR(d_s1, expected_d_s1, TOLERANCE);
+    EXPECT_NEAR(d_s2, expected_d_s2, TOLERANCE);
 }
 
 TEST_F(BasicExchangeOptionF, BasicGammaAssertion)
 {
     float expected_dd_s1 = 0.013964394107460976, expected_dd_s2 = 0.013964395970106125;
-    std::pair<float, float> dd_s1_dd_s2 = exchange_option_.getGammas();
+    auto [dd_s1, dd_s2] = exchange_option_.getGammas();
 
-    EXPECT_NEAR(dd_s1_dd_s2.first, expected_dd_s1, TOLERANCE);
-    EXPECT_NEAR(dd_s1_dd_s2.second, expected_dd_s2, TOLERANCE);
+    EXPECT_NEAR(dd_s1, expected_dd_s1, TOLERANCE);
+    EXPECT_NEAR(dd_s2, expected_dd_s2, TOLERANCE);
 }
 
 TEST_F(BasicExchangeOptionF, BasicCrossGammaAssertion)

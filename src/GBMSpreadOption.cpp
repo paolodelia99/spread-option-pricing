@@ -66,31 +66,70 @@ inline var _getKirkApproximation(var s1, var s2, var K, var t, var vol_1, var vo
 template<std::floating_point Real>
 Real GBMSpreadOption<Real>::getSpreadPrice()
 {
-    var spot_1 = this->spd_mkt_->getCurrentAsset1Price();
-    var spot_2 = this->spd_mkt_->getCurrentAsset2Price();
-    var time_to_exp = this->spd_mkt_->getTimeToExpiration();
+    var spot_1 = this->getCurrentAsset1Price();
+    var spot_2 = this->getCurrentAsset2Price();
+    var time_to_exp = this->getExpiration();
 
     var price = _getKirkApproximation(spot_1, spot_2, this->strike_price_,
         time_to_exp, this->vol_s1_, this->vol_s2_, this->corr_, this->discount_rate_);
     return static_cast<Real>(price);
 }
 
+inline std::pair<var, var> _getDeltas(var s1, var s2, var t, var K, var v1, var v2, var corr, var r)
+{
+    var price = _getKirkApproximation(s1, s2, K,
+        t, v1, v2, corr, r);
+
+    auto [d_s1, d_s2] = derivativesx(price, wrt(s1, s2));
+
+    return std::make_pair(d_s1, d_s2);
+}
+
 template<std::floating_point Real>
 std::pair<Real, Real> GBMSpreadOption<Real>::getDeltas() const
 {
-    return std::pair(0.0, 0.0);
+    var spot_1 = this->getCurrentAsset1Price();
+    var spot_2 = this->getCurrentAsset2Price();
+    var time_to_exp = this->getExpiration();
+
+    auto [d_s1, d_s2] = _getDeltas(spot_1, spot_2, time_to_exp,
+        this->strike_price_, this->getVolAsset1(), this->getVolAsset2(), this->getCorrelation(),
+        this->getDiscoutRate());
+
+    return std::pair<Real, Real>(d_s1, d_s2);
 }
 
 template<std::floating_point Real>
 std::pair<Real, Real> GBMSpreadOption<Real>::getGammas() const
 {
-    return std::pair(0.0, 0.0);
+    var spot_1 = this->getCurrentAsset1Price();
+    var spot_2 = this->getCurrentAsset2Price();
+    var time_to_exp = this->getExpiration();
+
+    auto [d_s1, d_s2] = _getDeltas(spot_1, spot_2, time_to_exp,
+        this->strike_price_, this->getVolAsset1(), this->getVolAsset2(), this->getCorrelation(),
+        this->getDiscoutRate());
+
+    auto [dd_s1] = derivativesx(d_s1, wrt(spot_1));
+    auto [dd_s2] = derivativesx(d_s2, wrt(spot_2));
+
+    return std::pair<Real, Real>(dd_s1, dd_s2);
 }
 
 template<std::floating_point Real>
 Real GBMSpreadOption<Real>::getCrossGamma() const
 {
-    return 0.0;
+    var spot_1 = this->getCurrentAsset1Price();
+    var spot_2 = this->getCurrentAsset2Price();
+    var time_to_exp = this->getExpiration();
+
+    auto [d_s1, d_s2] = _getDeltas(spot_1, spot_2, time_to_exp,
+        this->strike_price_, this->getVolAsset1(), this->getVolAsset2(), this->getCorrelation(),
+        this->getDiscoutRate());
+
+    auto [d_s1_d_s2] = derivativesx(d_s1, wrt(spot_2));
+
+    return static_cast<Real>(d_s1_d_s2);
 }
 
 template class GBMSpreadOption<float>;

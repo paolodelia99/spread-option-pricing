@@ -59,6 +59,32 @@ TEST_F(SpdExchangeOptionF, BasicExchangePriceAssertion)
     EXPECT_NEAR(result, expected_price, TOLERANCE);
 }
 
+TEST_F(SpdExchangeOptionF, BasicDeltaExchangeAssertion)
+{
+    float expected_d_s1 = -0.4437684714794159, expected_d_s2 = 0.5562313795089722;
+    auto [d_s1, d_s2] = spread_option_.getDeltas();
+
+    EXPECT_NEAR(d_s1, expected_d_s1, TOLERANCE);
+    EXPECT_NEAR(d_s2, expected_d_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionF, BasicGammaExchangeAssertion)
+{
+    float expected_dd_s1 = 0.013964394107460976, expected_dd_s2 = 0.01396439503878355;
+    auto [dd_s1, dd_s2] = spread_option_.getGammas();
+
+    EXPECT_NEAR(dd_s1, expected_dd_s1, TOLERANCE);
+    EXPECT_NEAR(dd_s2, expected_dd_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionF, BasicCrossGammaExchangeAssertion)
+{
+    float expected_d_s1_d_s2 = -0.013964394107460976;
+    float d_s1_d_s2 = spread_option_.getCrossGamma();
+
+    EXPECT_NEAR(d_s1_d_s2, expected_d_s1_d_s2, TOLERANCE);
+}
+
 TEST_F(SpdExchangeOptionF, BasicSpreadPriceAssertion)
 {
     const float strike = 5.0, corr = 0.0;
@@ -66,6 +92,36 @@ TEST_F(SpdExchangeOptionF, BasicSpreadPriceAssertion)
     float expected_price = 8.9353199005126953;
 
     EXPECT_NEAR(spread_option_.getSpreadPrice(), expected_price, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionF, BasicDeltaAssertion)
+{
+    float expected_d_s1 = -0.37467005848884583, expected_d_s2 = 0.48528015613555908;
+    const float strike = 5.0, corr = 0.0;
+    SetUp(strike, corr);
+    auto [d_s1, d_s2] = spread_option_.getDeltas();
+
+    EXPECT_NEAR(d_s1, expected_d_s1, TOLERANCE);
+    EXPECT_NEAR(d_s2, expected_d_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionF, BasicGammaAssertion)
+{
+    float expected_dd_s1 = 0.013055282644927502, expected_dd_s2 = 0.014437554404139519;
+    const float strike = 5.0, corr = 0.0;
+    SetUp(strike, corr);
+    auto [dd_s1, dd_s2] = spread_option_.getGammas();
+
+    EXPECT_NEAR(dd_s1, expected_dd_s1, TOLERANCE);
+    EXPECT_NEAR(dd_s2, expected_dd_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionF, BasicCrossGammaAssertion)
+{
+    float expected_d_s1_d_s2 = -0.013964394107460976;
+    float d_s1_d_s2 = spread_option_.getCrossGamma();
+
+    EXPECT_NEAR(d_s1_d_s2, expected_d_s1_d_s2, TOLERANCE);
 }
 
 TEST_F(SpdExchangeOptionF, SpreadPriceAssertion)
@@ -94,6 +150,32 @@ TEST_F(SpdExchangeOptionD, BasicExchangePriceAssertion)
     EXPECT_NEAR(spread_option_.getSpreadPrice(), expected_price, TOLERANCE);
 }
 
+TEST_F(SpdExchangeOptionD, BasicDeltaExchangeAssertion)
+{
+    double expected_d_s1 = -0.4437684714794159, expected_d_s2 = 0.5562313795089722;
+    auto [d_s1, d_s2] = spread_option_.getDeltas();
+
+    EXPECT_NEAR(d_s1, expected_d_s1, TOLERANCE);
+    EXPECT_NEAR(d_s2, expected_d_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionD, BasicGammaExchangeAssertion)
+{
+    double expected_dd_s1 = 0.013964394107460976, expected_dd_s2 = 0.01396439503878355;
+    auto [dd_s1, dd_s2] = spread_option_.getGammas();
+
+    EXPECT_NEAR(dd_s1, expected_dd_s1, TOLERANCE);
+    EXPECT_NEAR(dd_s2, expected_dd_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionD, BasicCrossGammaExchangeAssertion)
+{
+    double expected_d_s1_d_s2 = -0.013964394107460976;
+    double d_s1_d_s2 = spread_option_.getCrossGamma();
+
+    EXPECT_NEAR(d_s1_d_s2, expected_d_s1_d_s2, TOLERANCE);
+}
+
 TEST_F(SpdExchangeOptionD, BasicSpreadPriceAssertion)
 {
     const double strike = 5.0, corr = 0.0;
@@ -101,6 +183,36 @@ TEST_F(SpdExchangeOptionD, BasicSpreadPriceAssertion)
     double expected_price = 8.9353199005126953;
 
     EXPECT_NEAR(spread_option_.getSpreadPrice(), expected_price, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionD, BasicDeltaAssertion)
+{
+    double expected_d_s1 = -0.37467005848884583, expected_d_s2 = 0.48528015613555908;
+    const double strike = 5.0, corr = 0.0;
+    SetUp(strike, corr);
+    auto [d_s1, d_s2] = spread_option_.getDeltas();
+
+    EXPECT_NEAR(d_s1, expected_d_s1, TOLERANCE);
+    EXPECT_NEAR(d_s2, expected_d_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionD, BasicGammaAssertion)
+{
+    double expected_dd_s1 = 0.013055282644927502, expected_dd_s2 = 0.014437554404139519;
+    const double strike = 5.0, corr = 0.0;
+    SetUp(strike, corr);
+    auto [dd_s1, dd_s2] = spread_option_.getGammas();
+
+    EXPECT_NEAR(dd_s1, expected_dd_s1, TOLERANCE);
+    EXPECT_NEAR(dd_s2, expected_dd_s2, TOLERANCE);
+}
+
+TEST_F(SpdExchangeOptionD, BasicCrossGammaAssertion)
+{
+    double expected_d_s1_d_s2 = -0.013964394107460976;
+    double d_s1_d_s2 = spread_option_.getCrossGamma();
+
+    EXPECT_NEAR(d_s1_d_s2, expected_d_s1_d_s2, TOLERANCE);
 }
 
 TEST_F(SpdExchangeOptionD, SpreadPriceAssertion)
