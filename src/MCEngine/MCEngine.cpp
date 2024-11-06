@@ -22,7 +22,6 @@ MCEngine& MCEngine::operator=(MCEngine& other_engine)
     {
         n_timesteps_ = other_engine.n_timesteps_;
         num_sim_ = other_engine.num_sim_;
-        //pool_ = std::move(other_engine.pool_);
     }
     return *this;
 }
@@ -33,7 +32,6 @@ MCEngine& MCEngine::operator=(MCEngine&& other_engine) noexcept
     {
         n_timesteps_ = other_engine.n_timesteps_;
         num_sim_ = other_engine.num_sim_;
-        //pool_ = std::move(other_engine.pool_);
     }
     return *this;
 }

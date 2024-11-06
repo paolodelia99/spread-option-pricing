@@ -30,9 +30,11 @@ Once you have installed all the dependencies then to build the library locally, 
 
     git clone https://github.com/paolodelia99/spread-option-pricing
     cd spread-option-pricing
-    mkdir build && cd build
-    cmake .. -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE
-    make
+    source scripts/build.sh -bt <Release/Debug> -c <gcc/clang> -v <compiler_version>
+
+While to run the test the `run-tests.sh` script in the scripts folder has been provided 
+
+  source scripts/run-tests.sh -bt <Release/Debug> -c <gcc/clang> -v <compiler_version>
 
 ### Use the library
 
@@ -47,7 +49,7 @@ int main() {
     auto s1 = new float(100);
     auto s2 = new float(100);
     auto t = new float(100);
-    auto spd_data = new SpreadMarketData(s1, s2, t);
+    auto spd_data = std::make_shared<SpreadMarketData<float>>(SpreadMarketData(s1, s2, t));
 
     const float vol1 = 0.2;
     const float vol2 = 0.3;
@@ -61,24 +63,18 @@ int main() {
     
     // Greeks
     // Deltas
-    const std::pair<float, float> d_s1_d_s2 = mrg_option.getDeltas();
-    std::cout << "Delta 1(dP/dS_1): " << d_s1_d_s2.first << std::endl;
-    std::cout << "Delta 2(dP/dS_2): " << d_s1_d_s2.second << std::endl;
+    const auto [d_s1, d_s2] = mrg_option.getDeltas();
+    std::cout << "Delta 1(dP/dS_1): " << d_s1 << std::endl;
+    std::cout << "Delta 2(dP/dS_2): " << d_s2 << std::endl;
   
     //Gammas
-    const std::pair<float, float> dd_s1_dd_s2 = mrg_option.getGammas();
-    std::cout << "Gamma 1(d^2P/dS_1^2): " << dd_s1_dd_s2.first << std::endl;
-    std::cout << "Gamma 2(d^2P/dS_2^2): " << dd_s1_dd_s2.second << std::endl;
+    const auto [dd_s1, dd_s2] = mrg_option.getGammas();
+    std::cout << "Gamma 1(d^2P/dS_1^2): " << dd_s1 << std::endl;
+    std::cout << "Gamma 2(d^2P/dS_2^2): " << dd_s2 << std::endl;
 
     // Cross Gamma
     const float cross_gamma = mrg_option.getCrossGamma();
     std::cout << "Cross Gamma (d^2P/dS_1 dS_2): " << cross_gamma << std::endl;
-
-    // Clean up
-    delete s1;
-    delete s2;
-    delete t;
-    delete spd_data;
 
     return 0;
 }
