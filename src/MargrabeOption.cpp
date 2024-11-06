@@ -95,8 +95,8 @@ Real MargrabeOption<Real>::getCrossGamma() const
 template <std::floating_point Real>
 var MargrabeOption<Real>::_getMargrabePrice(var s1, var s2, var t, var vol_s1, var vol_s2, var corr)
 {
-    var d1 = computeD1(s1, s2, t, vol_s1, vol_s2, corr);
-    var d2 = computeD2(s1, s2, t, vol_s1, vol_s2, corr);
+    var d1 = MargrabeUtils::computeD1(s1, s2, t, vol_s1, vol_s2, corr);
+    var d2 = MargrabeUtils::computeD2(s1, s2, t, vol_s1, vol_s2, corr);
 
     return s2 * cumulativeNormal(d1) - s1 * cumulativeNormal(d2);
 }
