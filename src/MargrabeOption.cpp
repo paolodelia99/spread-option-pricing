@@ -112,18 +112,18 @@ std::pair<var, var> MargrabeOption<Real>::_getDeltas(var spot_1, var spot_2) con
     var price = _getMargrabePrice(spot_1, spot_2, time_to_exp, vol_s1, vol_s2, corr);
     auto [d_s1, d_s2] = derivativesx(price, wrt(spot_1, spot_2));
 
-    return std::pair<var, var>(d_s1, d_s2);
+    return std::make_pair(d_s1, d_s2);
 }
 
 template <std::floating_point Real>
 std::pair<var, var> MargrabeOption<Real>::_getGammas(var spot_1, var spot_2) const
 {
-    std::pair<var, var> deltas = _getDeltas(spot_1, spot_2);
+    auto [d_s1, d_s2] = _getDeltas(spot_1, spot_2);
 
-    auto [dd_s1] = derivativesx(deltas.first, wrt(spot_1));
-    auto [dd_s2] = derivativesx(deltas.second, wrt(spot_2));
+    auto [dd_s1] = derivativesx(d_s1, wrt(spot_1));
+    auto [dd_s2] = derivativesx(d_s2, wrt(spot_2));
 
-    return std::pair<var, var>(dd_s1, dd_s2);
+    return std::make_pair(dd_s1, dd_s2);
 }
 
 template <std::floating_point Real>
