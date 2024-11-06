@@ -3,6 +3,7 @@
 //
 
 #include "GBMSpreadOption.h"
+#include "MathUtils.h"
 
 constexpr unsigned int NUM_SIM = 20000;
 constexpr unsigned int ANNUAL_TRADING_DAYS = 252;
@@ -54,10 +55,24 @@ GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(GBMSpreadOption&& other)
     return *this;
 }
 
+inline var _getKirkApproximation(var s1, var s2, var K, var t, var vol_1, var vol_2, var corr, var r)
+{
+    var d1 = KirkUtils::computeD1(s1, s2, K, vol_1, vol_2, corr, t);
+    var d2 = KirkUtils::computeD2(s1, s2, K, vol_1, vol_2, corr, t);
+
+    return exp(-r * t) * s2 * cumulativeNormal(d1) - (s1 + K) * cumulativeNormal(d2);
+}
+
 template<std::floating_point Real>
 Real GBMSpreadOption<Real>::getSpreadPrice()
 {
-    return mc_engine_.calculatePrice<Real>(*this);
+    var spot_1 = this->spd_mkt_->getCurrentAsset1Price();
+    var spot_2 = this->spd_mkt_->getCurrentAsset2Price();
+    var time_to_exp = this->spd_mkt_->getTimeToExpiration();
+
+    var price = _getKirkApproximation(spot_1, spot_2, this->strike_price_,
+        time_to_exp, this->vol_s1_, this->vol_s2_, this->corr_, this->discount_rate_);
+    return static_cast<Real>(price);
 }
 
 template<std::floating_point Real>
