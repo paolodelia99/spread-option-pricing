@@ -14,20 +14,10 @@ template<std::floating_point Real>
 GBMSpreadOption<Real>::GBMSpreadOption(std::shared_ptr<SpreadMarketData<Real>> spd_mkt, Real strike_price,
     Real vol_s1, Real vol_s2, Real discount_rate, Real corr)
     : SpreadOption<Real>(spd_mkt, strike_price, vol_s1, vol_s2, discount_rate, corr),
-    mc_engine_(NUM_SIM, static_cast<int>(spd_mkt->getTimeToExpiration() * ANNUAL_TRADING_DAYS), 4)
-{
-    // int n_timesteps = spd_mkt->getTimeToExpiration() * ANNUAL_TRADING_DAYS;
-    // mc_engine_ = std::move(MCEngine<Real>(NUM_SIM, n_timesteps, 4));
-}
+    mc_engine_(NUM_SIM, static_cast<int>(spd_mkt->getTimeToExpiration() * ANNUAL_TRADING_DAYS), 4) {}
 
 template<std::floating_point Real>
 GBMSpreadOption<Real>::~GBMSpreadOption() {}
-
-// template <std::floating_point Real>
-// GBMSpreadOption<Real>::GBMSpreadOption(GBMSpreadOption& other)
-//     :SpreadOption<Real>(other), mc_engine_(std::move(other.mc_engine_))
-// {
-// }
 
 template <std::floating_point Real>
 GBMSpreadOption<Real>::GBMSpreadOption(GBMSpreadOption& other)
