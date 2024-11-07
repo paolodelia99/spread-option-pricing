@@ -46,7 +46,7 @@ GBMSpreadOption<Real>& GBMSpreadOption<Real>::operator=(GBMSpreadOption&& other)
     return *this;
 }
 
-inline var _getKirkApproximation(var s1, var s2, var K, var t, var vol_1, var vol_2, var corr, var r)
+inline var KirkApproximation(var s1, var s2, var K, var t, var vol_1, var vol_2, var corr, var r)
 {
     var d1 = KirkUtils::computeD1(s1, s2, K, vol_1, vol_2, corr, t);
     var d2 = KirkUtils::computeD2(s1, s2, K, vol_1, vol_2, corr, t);
@@ -54,21 +54,9 @@ inline var _getKirkApproximation(var s1, var s2, var K, var t, var vol_1, var vo
     return exp(-r * t) * s2 * cumulativeNormal(d1) - (s1 + K) * cumulativeNormal(d2);
 }
 
-template<std::floating_point Real>
-Real GBMSpreadOption<Real>::getSpreadPrice()
+inline std::pair<var, var> getKirkDeltas(var s1, var s2, var t, var K, var v1, var v2, var corr, var r)
 {
-    var spot_1 = this->getCurrentAsset1Price();
-    var spot_2 = this->getCurrentAsset2Price();
-    var time_to_exp = this->getExpiration();
-
-    var price = _getKirkApproximation(spot_1, spot_2, this->strike_price_,
-        time_to_exp, this->vol_s1_, this->vol_s2_, this->corr_, this->discount_rate_);
-    return static_cast<Real>(price);
-}
-
-inline std::pair<var, var> _getDeltas(var s1, var s2, var t, var K, var v1, var v2, var corr, var r)
-{
-    var price = _getKirkApproximation(s1, s2, K,
+    var price = KirkApproximation(s1, s2, K,
         t, v1, v2, corr, r);
 
     auto [d_s1, d_s2] = derivativesx(price, wrt(s1, s2));
@@ -76,28 +64,44 @@ inline std::pair<var, var> _getDeltas(var s1, var s2, var t, var K, var v1, var 
     return std::make_pair(d_s1, d_s2);
 }
 
-template<std::floating_point Real>
-std::pair<Real, Real> GBMSpreadOption<Real>::getDeltas() const
+template <std::floating_point Real>
+Real GBMSpreadOption<Real>::_getSpreadPrice()
 {
     var spot_1 = this->getCurrentAsset1Price();
     var spot_2 = this->getCurrentAsset2Price();
     var time_to_exp = this->getExpiration();
 
-    auto [d_s1, d_s2] = _getDeltas(spot_1, spot_2, time_to_exp,
-        this->strike_price_, this->getVolAsset1(), this->getVolAsset2(), this->getCorrelation(),
-        this->getDiscoutRate());
+    var price = KirkApproximation(spot_1, spot_2, this->strike_price_,
+        time_to_exp, this->vol_s1_, this->vol_s2_, this->corr_, this->discount_rate_);
+    return static_cast<Real>(price);
+}
+
+template <std::floating_point Real>
+std::pair<Real, Real> GBMSpreadOption<Real>::_getDeltas()
+{
+    var spot_1 = this->getCurrentAsset1Price();
+    var spot_2 = this->getCurrentAsset2Price();
+    var time_to_exp = this->getExpiration();
+    var strike_price = this->strike_price_;
+    var vol_1 = this->getVolAsset1();
+    var vol_2 = this->getVolAsset2();
+    var corr = this->getCorrelation();
+    var r = this->getDiscoutRate();
+
+    auto [d_s1, d_s2] = getKirkDeltas(spot_1, spot_2, time_to_exp,
+        strike_price, vol_1, vol_2, corr, r);
 
     return std::pair<Real, Real>(d_s1, d_s2);
 }
 
-template<std::floating_point Real>
-std::pair<Real, Real> GBMSpreadOption<Real>::getGammas() const
+template <std::floating_point Real>
+std::pair<Real, Real> GBMSpreadOption<Real>::_getGammas()
 {
     var spot_1 = this->getCurrentAsset1Price();
     var spot_2 = this->getCurrentAsset2Price();
     var time_to_exp = this->getExpiration();
 
-    auto [d_s1, d_s2] = _getDeltas(spot_1, spot_2, time_to_exp,
+    auto [d_s1, d_s2] = getKirkDeltas(spot_1, spot_2, time_to_exp,
         this->strike_price_, this->getVolAsset1(), this->getVolAsset2(), this->getCorrelation(),
         this->getDiscoutRate());
 
@@ -107,14 +111,14 @@ std::pair<Real, Real> GBMSpreadOption<Real>::getGammas() const
     return std::pair<Real, Real>(dd_s1, dd_s2);
 }
 
-template<std::floating_point Real>
-Real GBMSpreadOption<Real>::getCrossGamma() const
+template <std::floating_point Real>
+Real GBMSpreadOption<Real>::_getCrossGamma()
 {
     var spot_1 = this->getCurrentAsset1Price();
     var spot_2 = this->getCurrentAsset2Price();
     var time_to_exp = this->getExpiration();
 
-    auto [d_s1, d_s2] = _getDeltas(spot_1, spot_2, time_to_exp,
+    auto [d_s1, d_s2] = getKirkDeltas(spot_1, spot_2, time_to_exp,
         this->strike_price_, this->getVolAsset1(), this->getVolAsset2(), this->getCorrelation(),
         this->getDiscoutRate());
 
