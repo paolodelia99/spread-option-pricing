@@ -27,13 +27,13 @@ public:
 
     GBMSpreadOption& operator=(GBMSpreadOption&& other) noexcept;
 
-    Real getSpreadPrice() override;
+    Real _getSpreadPrice();
 
-    std::pair<Real, Real> getDeltas() const override;
+    std::pair<Real, Real> _getDeltas();
 
-    std::pair<Real, Real> getGammas() const override;
+    std::pair<Real, Real> _getGammas();
 
-    Real getCrossGamma() const override;
+    Real _getCrossGamma();
 };
 
 

@@ -32,17 +32,17 @@ public:
 
     MargrabeOption& operator=(MargrabeOption&& other) noexcept;
 
-    Real getSpreadPrice() override;
-
     Real getCurrentAsset1Price() const;
 
     Real getCurrentAsset2Price() const;
 
-    std::pair<Real, Real> getDeltas() const override;
+    Real _getSpreadPrice();
 
-    std::pair<Real, Real> getGammas() const override;
+    std::pair<Real, Real> _getDeltas();
 
-    Real getCrossGamma() const override;
+    std::pair<Real, Real> _getGammas();
+
+    Real _getCrossGamma();
 
 private:
     static var _getMargrabePrice(var s1, var s2, var t, var vol_s1, var vol_s2, var corr);

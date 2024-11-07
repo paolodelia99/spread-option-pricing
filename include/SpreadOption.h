@@ -42,13 +42,25 @@ public:
 
     Real getStrikePrice() const;
 
-    virtual Real getSpreadPrice() = 0;
+    Real getSpreadPrice(this auto&& self)
+    {
+        return self._getSpreadPrice();
+    }
 
-    virtual std::pair<Real, Real> getDeltas() const = 0;
+    std::pair<Real, Real> getDeltas(this auto&& self)
+    {
+        return self._getDeltas();
+    }
 
-    virtual std::pair<Real, Real> getGammas() const = 0;
+    std::pair<Real, Real> getGammas(this auto&& self)
+    {
+        return self._getGammas();
+    };
 
-    virtual Real getCrossGamma() const = 0;
+    Real getCrossGamma(this auto&& self)
+    {
+        return self._getCrossGamma();
+    };
 
 protected:
     std::shared_ptr<SpreadMarketData<Real>> spd_mkt_;
