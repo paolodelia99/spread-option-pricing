@@ -5,6 +5,7 @@
 #ifndef SPREADMARKET_H
 #define SPREADMARKET_H
 #include <concepts>
+#include <memory>
 
 
 template<std::floating_point Real>
@@ -17,34 +18,29 @@ struct SpreadMarketData
     {
     }
 
-    ~SpreadMarketData()
-    {
-        s1_ = nullptr;
-        s2_ = nullptr;
-        time_to_exp_ = nullptr;
-    }
+    ~SpreadMarketData() = default;
 
-    SpreadMarketData(const SpreadMarketData& other)
-        :s1_(new Real(other.getCurrentAsset1Price())), s2_(new Real(other.getCurrentAsset2Price())),
-        time_to_exp_(new Real(other.getTimeToExpiration()))
-    {
-    }
+    SpreadMarketData(const SpreadMarketData& other) = delete;
 
-    SpreadMarketData& operator=(const SpreadMarketData& other)
+    SpreadMarketData(SpreadMarketData&& other) noexcept
+        :s1_(std::move(other.s1_)),
+        s2_(std::move(other.s2_)),
+        time_to_exp_(std::move(other.time_to_exp_)) {}
+
+    SpreadMarketData& operator=(const SpreadMarketData& other) = delete;
+
+    SpreadMarketData& operator=(SpreadMarketData&& other) noexcept
     {
         if (this != &other)
         {
-            delete s1_;
-            delete s2_;
-            delete time_to_exp_;
-            s1_ = other.s1_ ? new Real(*(other.s1_)): nullptr;
-            s2_ = other.s2_ ? new Real(*(other.s2_)): nullptr;
-            time_to_exp_ = other.time_to_exp_ ? new Real(*(other.time_to_exp_)): nullptr;
+            s1_ = std::move(other.s1_);
+            s2_ = std::move(other.s2_);
+            time_to_exp_ = std::move(other.time_to_exp_);
         }
         return *this;
     }
 
-    Real getCurrentAsset1Price() const
+    [[nodiscard]] Real getCurrentAsset1Price() const
     {
         if (s1_)
             return *s1_;
@@ -52,7 +48,7 @@ struct SpreadMarketData
         return 0.0;
     }
 
-    Real getCurrentAsset2Price() const
+    [[nodiscard]] Real getCurrentAsset2Price() const
     {
         if (s2_)
             return *s2_;
@@ -60,7 +56,7 @@ struct SpreadMarketData
         return 0.0;
     }
 
-    Real getTimeToExpiration() const
+    [[nodiscard]] Real getTimeToExpiration() const
     {
         if (time_to_exp_)
             return *time_to_exp_;
@@ -69,9 +65,9 @@ struct SpreadMarketData
     }
 
 private:
-    Real* s1_;
-    Real* s2_;
-    Real* time_to_exp_;
+    std::unique_ptr<Real> s1_;
+    std::unique_ptr<Real> s2_;
+    std::unique_ptr<Real> time_to_exp_;
 };
 
 template struct SpreadMarketData<float>;
