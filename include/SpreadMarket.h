@@ -14,9 +14,18 @@ struct SpreadMarketData
     SpreadMarketData(Real* s1, Real* s2, Real* time_to_exp)
         : s1_(s1),
           s2_(s2),
-          time_to_exp_(time_to_exp)
-    {
-    }
+          time_to_exp_(time_to_exp) {}
+
+    SpreadMarketData(std::unique_ptr<Real> s1_ptr, std::unique_ptr<Real> s2_ptr,
+        std::unique_ptr<Real> t)
+        : s1_(std::move(s1_ptr)),
+        s2_(std::move(s2_ptr)),
+        time_to_exp_(std::move(t)) {}
+
+    SpreadMarketData(Real s1, Real s2, Real time_to_exp)
+        : s1_(std::make_unique<Real>(s1)),
+          s2_(std::make_unique<Real>(s2)),
+          time_to_exp_(std::make_unique<Real>(time_to_exp)) {}
 
     ~SpreadMarketData() = default;
 
